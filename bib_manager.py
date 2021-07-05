@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Class BibManager defines a bib file management tool for LaTeX users. 
+Class BibManager defines a bib file managing tool for LaTeX users. 
 Class BibManager can create/open a bib file, and do the followings:
 - read existing references and table of contents (if exists; stored as
 metadata) in the bib file;
@@ -9,7 +9,7 @@ metadata) in the bib file;
 - search/edit/remove an existing reference;
 - sort references;
 - global replace, e.g. "GUI" to "{GUI}" in title, "System" to "Syst." in journal;
-- (optional) syncronize with google scholar;
+- (optional) syncronize with Google Scholar;
 - generate/update the bib file.
 @author: sunlu.electric@gmail.com
 """
@@ -65,21 +65,28 @@ class BibManager:
         bib file.
         """
         if self.lst_table_of_contents is None:
-            print("No table of contents has been defined. " + \
+            print("There is no existing table of contents. " + \
                   "Please input the designed table of content below.\n")
-            # self.lst_talbe_of_content = ?
+            self.set_table_of_contents()
         else:
-            print("Existing table of contents is displayed as below.\n")
+            print("Existing table of contents is shown below.\n")
             self.show_table_of_contents()
             if self.__ask_yes_no("Do you want to edit the table of contents?"):
                 print("Please input the designed table of content below.\n")
-                # self.lst_talbe_of_content = ?
+                self.set_table_of_contents()
             else:
                 print("The table of contents remains unchanged.\n")
     def show_table_of_contents(self):
         """
         show_talbe_of_contents shows the table of content in the console.
         """
+        pass
+    def set_table_of_contents(self):
+        """
+        set_table_of_content reads the table of contents structure from the 
+        console and set it as the new table of contents.
+        """
+        # self.lst_talbe_of_contents = ?
         pass
     
     
