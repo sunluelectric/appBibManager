@@ -30,20 +30,34 @@ class BibTableOfContents:
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
         self.__creat_sublayer_from_list(lst_table_of_contents)
+    def show_table_of_contents(self):
+        """
+        show_table_of_contents shows the table of contents in the console.
+        """
+        lst_table_of_contents_keys = list(self.dict_table_of_contents.keys())
+        lst_table_of_contents_keys.sort()
+        if self.dict_table_of_contents:
+            print("The table of contents is as follows. \n")
+            print("Index No. \t Section Name \n")
+            for iter_item in lst_table_of_contents_keys:
+                int_layer_of_item = 9 - hex(iter_item).count('0')
+                print(hex(iter_item)[-8:] + "\t" + "\t"*int_layer_of_item + self.dict_table_of_contents[iter_item] + "\n")
+        else:
+            print("The table of contents has not been defined or is empty.\n")
     def __creat_sublayer_from_list(self, lst_single_list : list):
         """
         __read_list reads a single list and create a sub-layer accordingly. 
         """
-        self.change_layer(1)
+        self.__change_layer(1)
         for iter_item in lst_single_list:
             if isinstance(iter_item, list):
                 self.__creat_sublayer_from_list(iter_item)
             else:
-                self.add_item(iter_item)
-        self.change_layer(-1)
-    def add_item(self, str_item_name : str):
+                self.__add_item(iter_item)
+        self.__change_layer(-1)
+    def __add_item(self, str_item_name : str):
         """
-        __add_item adds a new (sub)section to the current layer
+        ____add_item adds a new (sub)section to the current layer
         """
         int_current_layer_index = self.__get_current_layer_index()
         if (1<= int_current_layer_index + 1 <= 15):
@@ -55,9 +69,9 @@ class BibTableOfContents:
         else:
             GeneralErrorMessage("Variable int_current_layer_index overflow.")
         self.dict_table_of_contents[self.hex_current_index] =  str_item_name
-    def change_layer(self, int_change_layer : int):
+    def __change_layer(self, int_change_layer : int):
         """
-        change_layer changes the layer of the index of the talbe of contents
+        __change_layer changes the layer of the index of the talbe of contents
         """
         if (0 <= self.int_current_layer_pointer + int_change_layer <= 8):
             self.int_current_layer_pointer = self.int_current_layer_pointer + int_change_layer
