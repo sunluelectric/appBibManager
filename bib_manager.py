@@ -11,10 +11,11 @@ metadata) in the bib file;
 - global replace, e.g. "GUI" to "{GUI}" in title, "System" to "Syst." in journal;
 - (optional) syncronize with Google Scholar;
 - generate/update the bib file.
-@author: sunlu.electric@gmail.com
+@author: github.com/sunluelectric
 """
 
 import os
+from bib_table_of_contents import BibTableOfContents
 
 class BibManager:
     """
@@ -24,7 +25,7 @@ class BibManager:
         print("Welcome to BibManager.\n")
         print("Initializing...\n")
         self.path_bib = None
-        self.lst_table_of_contents = None
+        self.obj_table_of_contents = None
         self.dict_refs = None
     def set_path(self):
         """
@@ -55,7 +56,7 @@ class BibManager:
         contents is also read and stored in a 2D list.
         """
         print("Reading the bib file...")
-        # self.lst_table_of_contents = ?
+        # self.obj_table_of_contents = ?
         # self.lst_refs = ?
         pass
     
@@ -64,8 +65,8 @@ class BibManager:
         edit_table_of_contents creates or edits the table of contents of the
         bib file.
         """
-        if self.lst_table_of_contents is None:
-            print("There is no existing table of contents. " + \
+        if self.obj_table_of_contents is None:
+            print("There is no table of contents registered. " + \
                   "Please input the designed table of content below.\n")
             self.set_table_of_contents()
         else:
@@ -80,13 +81,19 @@ class BibManager:
         """
         show_talbe_of_contents shows the table of content in the console.
         """
-        pass
+        if self.obj_table_of_contents is None:
+            print("There is table of contents registered.\n")
+        else:
+            self.obj_table_of_contents.show_table_of_contents()
     def set_table_of_contents(self):
         """
         set_table_of_content reads the table of contents structure from the 
         console and set it as the new table of contents.
         """
-        # self.lst_talbe_of_contents = ?
+        self.obj_talbe_of_contents = BibTableOfContents()
+        lst_table_of_contents_concatenated = self.__input_concatenated_list()
+        self.obj_talbe_of_contents.create_table_of_contents(
+            lst_table_of_contents_concatenated)
         pass
     
     
@@ -99,5 +106,6 @@ class BibManager:
                 return False
             else:
                 str_input = input("Please reply with YES or NO: ")
-    def __inputmultipleline():
-        lst_input = []
+    def __input_concatenated_list():
+        lst_concatenated = []
+        return lst_concatenated

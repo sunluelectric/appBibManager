@@ -2,7 +2,7 @@
 """
 Class BibTableOfContents is a dataclass use to contain the metadata for
 table of contents information used in class BibManager.
-@author: sunlu
+@author: github.com/sunluelectric
 """
 
 from dataclasses import dataclass
@@ -21,7 +21,7 @@ class BibTableOfContents:
         self.hex_current_index = 0x00000000
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
-    def create_table_of_contents(self, lst_table_of_contents : list):
+    def create_table_of_contents_from_list(self, lst_table_of_contents : list):
         """
         create_table_of_contents_from_list creates the table of contents from a
         multi-dimention list.
@@ -30,6 +30,31 @@ class BibTableOfContents:
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
         self.__creat_sublayer_from_list(lst_table_of_contents)
+    def create_table_of_contents_from_console(self):
+        """
+        create_table_of_contents_from_console creats the table of contents from
+        multiple-line inputs from the console.
+        """
+        self.hex_current_index = 0x00000000
+        self.int_current_layer_pointer = 0
+        self.dict_table_of_contents = {}
+        print("Please key in the table of contents below. " + \
+              "Use TAB to switch sections. Enter a blank row to quit.\n")
+        lst_console_inputs = []
+        while True:
+            try:
+                str_console_input = input()
+                if str_console_input == '':
+                    break
+            except EOFError:
+                break
+            lst_console_inputs.append(str_console_input)
+        for iter_item in lst_console_inputs:
+            if 1 <= iter_item.count('\t') + 1 <= 8:
+                self.int_current_layer_pointer = iter_item.count('\t') + 1
+            else:
+                GeneralErrorMessage("Variable int_current_layer_pointer overflow.")
+            self.__add_item(iter_item.replace('\t', ''))
     def show_table_of_contents(self):
         """
         show_table_of_contents shows the table of contents in the console.
@@ -41,12 +66,15 @@ class BibTableOfContents:
             print("Index No. \t Section Name \n")
             for iter_item in lst_table_of_contents_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
-                print(hex(iter_item)[-8:] + "\t" + "\t"*int_layer_of_item + self.dict_table_of_contents[iter_item] + "\n")
+                print(hex(iter_item)[-8:] + \
+                      "\t" + \
+                      "\t"*int_layer_of_item + \
+                      self.dict_table_of_contents[iter_item] + "\n")
         else:
             print("The table of contents has not been defined or is empty.\n")
     def __creat_sublayer_from_list(self, lst_single_list : list):
         """
-        __read_list reads a single list and create a sub-layer accordingly. 
+        __read_list reads a single list and create a sub-layer accordingly.
         """
         self.__change_layer(1)
         for iter_item in lst_single_list:
@@ -60,7 +88,7 @@ class BibTableOfContents:
         ____add_item adds a new (sub)section to the current layer
         """
         int_current_layer_index = self.__get_current_layer_index()
-        if (1<= int_current_layer_index + 1 <= 15):
+        if 1<= int_current_layer_index + 1 <= 15:
             self.hex_current_index = \
                 self.hex_current_index + 16**(8-self.int_current_layer_pointer)
             self.hex_current_index = \
@@ -73,8 +101,9 @@ class BibTableOfContents:
         """
         __change_layer changes the layer of the index of the talbe of contents
         """
-        if (0 <= self.int_current_layer_pointer + int_change_layer <= 8):
-            self.int_current_layer_pointer = self.int_current_layer_pointer + int_change_layer
+        if 0 <= self.int_current_layer_pointer + int_change_layer <= 8:
+            self.int_current_layer_pointer = \
+                self.int_current_layer_pointer + int_change_layer
         else:
             GeneralErrorMessage("Variable int_current_layer_pointer overflow.")
     def __get_current_layer_index(self):
@@ -82,6 +111,6 @@ class BibTableOfContents:
         __get_current_layer_index calculates the current layer index from
         self.hex_current_index and self.int_current_layer_pointer
         """
-        d1 = (16**(8-self.int_current_layer_pointer+1))
-        d2 = (16**(8-self.int_current_layer_pointer))
-        return (self.hex_current_index % d1) // d2
+        int_d1 = (16**(8-self.int_current_layer_pointer+1))
+        int_d2 = (16**(8-self.int_current_layer_pointer))
+        return (self.hex_current_index % int_d1) // int_d2
