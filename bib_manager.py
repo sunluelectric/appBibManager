@@ -59,30 +59,12 @@ class BibManager:
         # self.obj_table_of_contents = ?
         # self.lst_refs = ?
         pass
-    
-    def edit_table_of_contents(self):
-        """
-        edit_table_of_contents creates or edits the table of contents of the
-        bib file.
-        """
-        if self.obj_table_of_contents is None:
-            print("There is no table of contents registered. " + \
-                  "Please input the designed table of content below.\n")
-            self.set_table_of_contents()
-        else:
-            print("Existing table of contents is shown below.\n")
-            self.show_table_of_contents()
-            if self.__ask_yes_no("Do you want to edit the table of contents?"):
-                print("Please input the designed table of content below.\n")
-                self.set_table_of_contents()
-            else:
-                print("The table of contents remains unchanged.\n")
     def show_table_of_contents(self):
         """
         show_talbe_of_contents shows the table of content in the console.
         """
         if self.obj_table_of_contents is None:
-            print("There is table of contents registered.\n")
+            print("There is no table of contents registered.\n")
         else:
             self.obj_table_of_contents.show_table_of_contents()
     def set_table_of_contents(self):
@@ -91,12 +73,9 @@ class BibManager:
         console and set it as the new table of contents.
         """
         self.obj_talbe_of_contents = BibTableOfContents()
-        lst_table_of_contents_concatenated = self.__input_concatenated_list()
-        self.obj_talbe_of_contents.create_table_of_contents(
-            lst_table_of_contents_concatenated)
-        pass
-    
-    
+        self.obj_table_of_contents.create_table_of_contents_from_console()
+        print("The following table of contents is created.\n")
+        self.show_table_of_contents()
     def __ask_yes_no(str_message):
         str_input = input(str_message + " (YES/NO): ")
         while True:
@@ -106,6 +85,3 @@ class BibManager:
                 return False
             else:
                 str_input = input("Please reply with YES or NO: ")
-    def __input_concatenated_list():
-        lst_concatenated = []
-        return lst_concatenated
