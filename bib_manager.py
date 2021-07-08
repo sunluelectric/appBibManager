@@ -102,7 +102,7 @@ class BibManager:
             file_bib = open(self.path_bib, 'w')
             # time
             str_print = "%% - Latest Updated Time: " + \
-                datetime.now().strftime("%H:%M:%S") + "\n"
+                datetime.now().strftime("%B %d, %Y %H:%M:%S") + "\n"
             file_bib.write(str_print)
             print(str_print)
             # author
