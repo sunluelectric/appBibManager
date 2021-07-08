@@ -25,8 +25,7 @@ class BibManager:
     Class BibManager defines a bib file management tool for LaTeX users.
     """
     def __init__(self):
-        print("Welcome to BibManager.\n")
-        print("Initializing...\n")
+        print("Welcome to BibManager.")
         self.path_bib = None
         self.obj_table_of_contents = BibTableOfContents()
         # self.dict_refs = None
@@ -36,9 +35,9 @@ class BibManager:
         """
         path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib): ")
         if os.path.isfile(path_bib):
-            print("The path directs to an exsiting bib file...\n")
+            print("The path directs to an exsiting bib file...")
             if self.__ask_yes_no("Do you want to work on this bib file?"):
-                print("The path has been confirmed. \n")
+                print("The path has been confirmed. ")
                 self.path_bib = path_bib
                 return 0
             else:
@@ -46,10 +45,10 @@ class BibManager:
                 return 1
         else:
             print("There is no bib file found in the given path. " \
-                  + "A new bib file is created. \n")
+                  + "A new bib file is created. ")
             self.path_bib = path_bib
             file_bib = open(self.path_bib, 'w')
-            file_bib.write('%% ' + self.path_bib.split('/')[-1] + ' %%' + '\n')
+            file_bib.write('%% ' + self.path_bib.split('/')[-1])
             file_bib.close()
             return 0
     def read_bib(self):
@@ -67,7 +66,7 @@ class BibManager:
         show_talbe_of_contents shows the table of content in the console.
         """
         if self.obj_table_of_contents is None:
-            print("There is no table of contents registered.\n")
+            print("There is no table of contents registered.")
         else:
             self.obj_table_of_contents.show_table_of_contents()
     def set_table_of_contents(self):
@@ -77,7 +76,7 @@ class BibManager:
         """
         self.obj_talbe_of_contents = BibTableOfContents()
         self.obj_table_of_contents.create_table_of_contents_from_console()
-        print("The following table of contents is created.\n")
+        print("The following table of contents is created.")
         self.show_table_of_contents()
     def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
         """
@@ -94,42 +93,42 @@ class BibManager:
         print("The updated bib file will be stored at " + path_output_bib)
         if os.path.isfile(path_output_bib):
             print("Warning: This path points to an existing file. \
-                  The file will be over written.\n")
+                  The file will be over written.")
         if self.__ask_yes_no("Do you want to continue?"):
-            print("Redirecting path to " + path_output_bib + "\n")
+            print("Redirecting path to " + path_output_bib + "")
             self.path_bib = path_output_bib
-            print("Updating bib file...\n")
+            print("Updating bib file...")
             file_bib = open(self.path_bib, 'w')
             # time
             str_print = "%% - Latest Updated Time: " + \
-                datetime.now().strftime("%B %d, %Y %H:%M:%S") + "\n"
-            file_bib.write(str_print)
+                datetime.now().strftime("%B %d, %Y %H:%M:%S")
+            file_bib.write(str_print + "\n")
             print(str_print)
             # author
-            str_print = "%% - Updated by: " + AUTHOR_NAME + "\n"
-            file_bib.write(str_print)
+            str_print = "%% - Updated by: " + AUTHOR_NAME
+            file_bib.write(str_print + "\n")
             print(str_print)
             # table of Contents
             if self.obj_table_of_contents is None:
-                str_print = "%% - Table of Contents: None \n"
-                file_bib.write(str_print)
+                str_print = "%% - Table of Contents: None"
+                file_bib.write(str_print + "\n")
                 print(str_print)
             else:
-                str_list = "%% - Table of Contents\n"
-                file_bib.write(str_list)
+                str_list = "%% - Table of Contents"
+                file_bib.write(str_list + "\n")
                 print(str_list)
                 lst_print = self.obj_table_of_contents.return_table_of_contents()
                 for iter_item in lst_print:
                     str_list = "%% - > " + iter_item
-                    file_bib.write(str_list)
+                    file_bib.write(str_list + "\n")
                     print(str_list)
-                str_print = "%% - End of Table of Contents\n"
-                file_bib.write(str_print)
+                str_print = "%% - End of Table of Contents"
+                file_bib.write(str_print + "\n")
                 print(str_print)
             # references
             file_bib.close()
         else:
-            print("Abort: The bib file is not updated.\n")
+            print("Abort: The bib file is not updated.")
     @staticmethod
     def __ask_yes_no(str_message):
         str_input = input(str_message + " (YES/NO): ")

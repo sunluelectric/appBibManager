@@ -39,7 +39,7 @@ class BibTableOfContents:
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
         print("Please key in the table of contents below. " + \
-              "Use TAB(s) for sub sections. Enter a blank row to quit.\n")
+              "Use TAB(s) for sub sections. Enter a blank row to quit.")
         lst_console_inputs = []
         while True:
             try:
@@ -62,17 +62,17 @@ class BibTableOfContents:
         lst_table_of_contents_keys = list(self.dict_table_of_contents.keys())
         lst_table_of_contents_keys.sort()
         if self.dict_table_of_contents:
-            print("The table of contents is as follows. \n")
-            print("Index No. \t Section Name \n")
+            print("The table of contents is as follows. ")
+            print("Index No. \t Section Name")
             for iter_item in lst_table_of_contents_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
                 str_print = hex(iter_item)[-8:] + \
                     "\t" + \
                     "\t"*int_layer_of_item + \
-                    self.dict_table_of_contents[iter_item] + "\n"
+                    self.dict_table_of_contents[iter_item]
                 print(str_print)
         else:
-            print("The table of contents has not been defined or is empty.\n")
+            print("The table of contents has not been defined or is empty.")
     def return_table_of_contents(self):
         """
         return_table_of_contents returns the table of contents in a list. The
@@ -85,7 +85,7 @@ class BibTableOfContents:
             for iter_item in lst_table_of_contents_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
                 str_print = "\t"*(int_layer_of_item-1) + \
-                    self.dict_table_of_contents[iter_item] + "\n"
+                    self.dict_table_of_contents[iter_item]
                 lst_print.append(str_print)
             return lst_print
         return None
