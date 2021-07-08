@@ -66,12 +66,31 @@ class BibTableOfContents:
             print("Index No. \t Section Name \n")
             for iter_item in lst_table_of_contents_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
-                print(hex(iter_item)[-8:] + \
-                      "\t" + \
-                      "\t"*int_layer_of_item + \
-                      self.dict_table_of_contents[iter_item] + "\n")
+                str_print = hex(iter_item)[-8:] + \
+                    "\t" + \
+                    "\t"*int_layer_of_item + \
+                    self.dict_table_of_contents[iter_item] + "\n"
+                print(str_print)
         else:
             print("The table of contents has not been defined or is empty.\n")
+    def return_table_of_contents(self):
+        """
+        return_table_of_contents returns the table of contents in a list. The
+        list can be printed in the updated bib file.
+        """
+        lst_print = []
+        lst_table_of_contents_keys = list(self.dict_table_of_contents.keys())
+        lst_table_of_contents_keys.sort()
+        if self.dict_table_of_contents:
+            print("The table of contents is as follows. \n")
+            print("Index No. \t Section Name \n")
+            for iter_item in lst_table_of_contents_keys:
+                int_layer_of_item = 9 - hex(iter_item).count('0')
+                str_print = "\t"*(int_layer_of_item-1) + \
+                    self.dict_table_of_contents[iter_item] + "\n"
+                lst_print.append(str_print)
+            return lst_print
+        return None
     def __creat_sublayer_from_list(self, lst_single_list : list):
         """
         __read_list reads a single list and create a sub-layer accordingly.

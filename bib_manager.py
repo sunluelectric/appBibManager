@@ -15,7 +15,10 @@ metadata) in the bib file;
 """
 
 import os
+from datetime import datetime
 from bib_table_of_contents import BibTableOfContents
+
+AUTHOR_NAME = "SUN LU"
 
 class BibManager:
     """
@@ -25,8 +28,8 @@ class BibManager:
         print("Welcome to BibManager.\n")
         print("Initializing...\n")
         self.path_bib = None
-        self.obj_table_of_contents = None
-        self.dict_refs = None
+        self.obj_table_of_contents = BibTableOfContents()
+        # self.dict_refs = None
     def set_path(self):
         """
         setpath sets the path to the bib file.
@@ -39,7 +42,7 @@ class BibManager:
                 self.path_bib = path_bib
                 return 0
             else:
-                print("The path has been aborted.")
+                print("Abort: the path is not saved.")
                 return 1
         else:
             print("There is no bib file found in the given path. " \
@@ -76,6 +79,56 @@ class BibManager:
         self.obj_table_of_contents.create_table_of_contents_from_console()
         print("The following table of contents is created.\n")
         self.show_table_of_contents()
+    def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
+        """
+        update_bib updates the bib file, including:
+        - print the path to the updated bib file (by default the same path as
+        self.path_bib, unless otherwise specified);
+        - generate time author name stamps in the bib file;
+        - print table of content in the bib file;
+        - (optional, by default) sort the references;
+        - print references in the bib file.
+        """
+        if path_output_bib == 'default':
+            path_output_bib = self.path_bib
+        print("The updated bib file will be stored at " + path_output_bib)
+        if os.path.isfile(path_output_bib):
+            print("Warning: This path points to an existing file. \
+                  The file will be over written.\n")
+        if self.__ask_yes_no("Do you want to continue?"):
+            print("Redirecting path to " + path_output_bib + "\n")
+            self.path_bib = path_output_bib
+            print("Updating bib file...\n")
+            file_bib = open(self.path_bib, 'w')
+            # time
+            str_print = "%% - Latest Updated Time: " + \
+                datetime.now().strftime("%H:%M:%S") + "\n"
+            file_bib.write(str_print)
+            print(str_print)
+            # author
+            str_print = "%% - Updated by: " + AUTHOR_NAME + "\n"
+            file_bib.write(str_print)
+            print(str_print)
+            # table of Contents
+            if self.obj_table_of_contents is None:
+                str_print = "%% - Table of Contents: None \n"
+                file_bib.write(str_print)
+                print(str_print)
+            else:
+                str_list = "%% - Table of Contents\n"
+                file_bib.write(str_list)
+                print(str_list)
+                lst_print = self.obj_table_of_contents.return_table_of_contents()
+                file_bib.write("\n".join(lst_print))
+                self.obj_table_of_contents.show_table_of_contents()
+                str_print = "%% - End of Table of Contents\n"
+                file_bib.write(str_print)
+                print(str_print)
+            # references
+            file_bib.close()
+        else:
+            print("Abort: The bib file is not updated.\n")
+    @staticmethod
     def __ask_yes_no(str_message):
         str_input = input(str_message + " (YES/NO): ")
         while True:
@@ -84,4 +137,4 @@ class BibManager:
             elif str_input.upper() == 'NO':
                 return False
             else:
-                str_input = input("Please reply with YES or NO: ")
+                str_input = input("Please reply with either YES or NO: ")
