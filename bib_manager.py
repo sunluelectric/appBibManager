@@ -119,8 +119,10 @@ class BibManager:
                 file_bib.write(str_list)
                 print(str_list)
                 lst_print = self.obj_table_of_contents.return_table_of_contents()
-                file_bib.write("\n".join(lst_print))
-                self.obj_table_of_contents.show_table_of_contents()
+                for iter_item in lst_print:
+                    str_list = "%% - > " + iter_item
+                    file_bib.write(str_list)
+                    print(str_list)
                 str_print = "%% - End of Table of Contents\n"
                 file_bib.write(str_print)
                 print(str_print)

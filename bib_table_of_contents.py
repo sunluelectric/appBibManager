@@ -82,8 +82,6 @@ class BibTableOfContents:
         lst_table_of_contents_keys = list(self.dict_table_of_contents.keys())
         lst_table_of_contents_keys.sort()
         if self.dict_table_of_contents:
-            print("The table of contents is as follows. \n")
-            print("Index No. \t Section Name \n")
             for iter_item in lst_table_of_contents_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
                 str_print = "\t"*(int_layer_of_item-1) + \
