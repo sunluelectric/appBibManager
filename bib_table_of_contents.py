@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Class BibTableOfContents is a dataclass use to contain the metadata for
+Class BibTableOfContents is a dataclass used to record the metadata for
 table of contents information used in class BibManager.
 @author: github.com/sunluelectric
 """
@@ -11,14 +11,14 @@ from self_error import GeneralErrorMessage
 @dataclass
 class BibTableOfContents:
     """
-    Class BibTableOfContents is a dataclass use to contain the metadata for
+    Class BibTableOfContents is a dataclass used to record the metadata for
     table of contents information used in class BibManager.
     """
-    hex_current_index : int
+    hex_current_layer_index : int
     int_current_layer_pointer : int
     dict_talbe_of_contents : dict
     def __init__(self):
-        self.hex_current_index = 0x00000000
+        self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
     def create_table_of_contents_from_list(self, lst_table_of_contents : list):
@@ -26,7 +26,7 @@ class BibTableOfContents:
         create_table_of_contents_from_list creates the table of contents from a
         multi-dimention list.
         """
-        self.hex_current_index = 0x00000000
+        self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
         self.__creat_sublayer_from_list(lst_table_of_contents)
@@ -35,7 +35,7 @@ class BibTableOfContents:
         create_table_of_contents_from_console creats the table of contents from
         multiple-line inputs from the console.
         """
-        self.hex_current_index = 0x00000000
+        self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
         print("Please key in the table of contents below. " + \
@@ -104,16 +104,16 @@ class BibTableOfContents:
         """
         ____add_item adds a new (sub)section to the current layer
         """
-        int_current_layer_index = self.__get_current_layer_index()
-        if 1<= int_current_layer_index + 1 <= 15:
-            self.hex_current_index = \
-                self.hex_current_index + 16**(8-self.int_current_layer_pointer)
-            self.hex_current_index = \
-                self.hex_current_index - \
-                (self.hex_current_index % 16**(8-self.int_current_layer_pointer))
+        int_current_layer_section_number = self.__get_current_layer_section_number()
+        if 1<= int_current_layer_section_number + 1 <= 15:
+            self.hex_current_layer_index = \
+                self.hex_current_layer_index + 16**(8-self.int_current_layer_pointer)
+            self.hex_current_layer_index = \
+                self.hex_current_layer_index - \
+                (self.hex_current_layer_index % 16**(8-self.int_current_layer_pointer))
         else:
-            GeneralErrorMessage("Variable int_current_layer_index overflow.")
-        self.dict_table_of_contents[self.hex_current_index] =  str_item_name
+            GeneralErrorMessage("Variable int_current_layer_section_number overflow.")
+        self.dict_table_of_contents[self.hex_current_layer_index] =  str_item_name
     def __change_layer(self, int_change_layer : int):
         """
         __change_layer changes the layer of the index of the talbe of contents
@@ -123,11 +123,11 @@ class BibTableOfContents:
                 self.int_current_layer_pointer + int_change_layer
         else:
             GeneralErrorMessage("Variable int_current_layer_pointer overflow.")
-    def __get_current_layer_index(self):
+    def __get_current_layer_section_number(self):
         """
-        __get_current_layer_index calculates the current layer index from
-        self.hex_current_index and self.int_current_layer_pointer
+        __get_current_layer_section_number calculates the current layer index from
+        self.hex_current_layer_index and self.int_current_layer_pointer
         """
         int_d1 = (16**(8-self.int_current_layer_pointer+1))
         int_d2 = (16**(8-self.int_current_layer_pointer))
-        return (self.hex_current_index % int_d1) // int_d2
+        return (self.hex_current_layer_index % int_d1) // int_d2

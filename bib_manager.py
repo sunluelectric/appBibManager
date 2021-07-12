@@ -17,6 +17,8 @@ metadata) in the bib file;
 import os
 from datetime import datetime
 from bib_table_of_contents import BibTableOfContents
+from bib_reference import BibReference
+from self_error import GeneralErrorMessage
 
 AUTHOR_NAME = "SUN LU"
 
@@ -28,7 +30,7 @@ class BibManager:
         print("Welcome to BibManager.")
         self.path_bib = None
         self.obj_table_of_contents = BibTableOfContents()
-        # self.dict_refs = None
+        self.dict_refs = {}
     def set_path(self):
         """
         setpath sets the path to the bib file.
@@ -39,18 +41,15 @@ class BibManager:
             if self.__ask_yes_no("Do you want to work on this bib file?"):
                 print("The path has been confirmed. ")
                 self.path_bib = path_bib
-                return 0
             else:
                 print("Abort: the path is not saved.")
-                return 1
         else:
             print("There is no bib file found in the given path. " \
                   + "A new bib file is created. ")
             self.path_bib = path_bib
             file_bib = open(self.path_bib, 'w')
-            file_bib.write('%% ' + self.path_bib.split('/')[-1])
+            file_bib.write('%% - Name of bib file: ' + self.path_bib.split('/')[-1])
             file_bib.close()
-            return 0
     def read_bib(self):
         """
         readbib reads references items from self.path_bib, and store them in
@@ -69,15 +68,38 @@ class BibManager:
             print("There is no table of contents registered.")
         else:
             self.obj_table_of_contents.show_table_of_contents()
-    def set_table_of_contents(self):
+    def create_table_of_contents_from_console(self):
         """
-        set_table_of_content reads the table of contents structure from the 
-        console and set it as the new table of contents.
+        create_table_of_contents_from_console reads the table of contents 
+        structure from the console and sets it as the new table of contents.
         """
         self.obj_talbe_of_contents = BibTableOfContents()
         self.obj_table_of_contents.create_table_of_contents_from_console()
         print("The following table of contents is created.")
         self.show_table_of_contents()
+    def add_reference_from_console(self):
+        """
+        add_reference_from_console reads the reference information from the
+        console and adds it to the reference dictionary.
+        """
+        print("Please key in the reference below. Register ONE reference only. " + \
+              "Enter a blank row to quit.")
+        lst_console_inputs = []
+        while True:
+            try:
+                str_console_input = input()
+                if str_console_input == '':
+                    break
+            except EOFError:
+                break
+            lst_console_inputs.append(str_console_input)
+        obj_reference = BibReference()
+        for iter_item in lst_console_inputs:
+            # obj_reference.enum_type = ?
+            # obj_reference.str_type = ?
+            # ...
+            pass
+        self.dict_refs[obj_reference.str_id] = obj_reference
     def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
         """
         update_bib updates the bib file, including:
@@ -100,7 +122,7 @@ class BibManager:
             print("Updating bib file...")
             file_bib = open(self.path_bib, 'w')
             # time
-            str_print = "%% - Latest Updated Time: " + \
+            str_print = "%% - Latest updated time: " + \
                 datetime.now().strftime("%B %d, %Y %H:%M:%S")
             file_bib.write(str_print + "\n")
             print(str_print)
@@ -110,11 +132,11 @@ class BibManager:
             print(str_print)
             # table of Contents
             if self.obj_table_of_contents is None:
-                str_print = "%% - Table of Contents: None"
+                str_print = "%% - Table of contents: None"
                 file_bib.write(str_print + "\n")
                 print(str_print)
             else:
-                str_list = "%% - Table of Contents"
+                str_list = "%% - Table of contents: "
                 file_bib.write(str_list + "\n")
                 print(str_list)
                 lst_print = self.obj_table_of_contents.return_table_of_contents()
