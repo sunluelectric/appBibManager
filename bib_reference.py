@@ -26,10 +26,10 @@ class BibReference:
     str_author : str
     # book and article
     str_journal : str
-    int_volume : int
-    int_number : int
-    lst_pages : list
-    int_year : int
+    str_volume : str
+    str_number : str
+    str_pages : str
+    str_year : str
     str_publisher : str
     # inproceedings
     str_booktitle : str
@@ -39,4 +39,25 @@ class BibReference:
     str_urldate : str
     # bib management
     hex_layer_index : int
+    def __init__(self):
+        self.enum_type = None
+        self.str_type = None
+        self.str_id = None
+        self.str_title = None
+        self.str_author = None
+        # book and article
+        self.str_journal = None
+        self.str_volume = None
+        self.str_number = None
+        self.str_pages = None
+        self.str_year = None
+        self.str_publisher = None
+        # inproceedings
+        self.str_booktitle = None
+        self.str_organization = None
+        # online
+        self.str_url = None
+        self.str_urldate = None
+        # bib management
+        self.hex_layer_index = None
     
