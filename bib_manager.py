@@ -94,11 +94,12 @@ class BibManager:
             except EOFError:
                 break
             lst_console_inputs.append(str_console_input)
-        obj_reference = BibReference()
+        lst_console_inputs = self.__chop_list(lst_console_inputs)
         for iter_item in lst_console_inputs:
             # type and id
             lst_keyinfo = re.findall('@.*{', iter_item)
             if len(lst_keyinfo) > 0:
+                obj_reference = BibReference()
                 obj_reference.str_type = lst_keyinfo[0][1:-1].lower()
                 if obj_reference.str_type == 'book':
                     obj_reference.enum_type = PublicationType(1)
@@ -155,8 +156,9 @@ class BibManager:
                 lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
                 obj_reference.str_publisher = lst_keyinfo[0][1:-1]
             # obj_reference.str_type = ?
-            # ...
-        self.dict_refs[obj_reference.str_id] = obj_reference
+            # end
+            if iter_item == '}':
+                self.dict_refs[obj_reference.str_id] = obj_reference
     def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
         """
         update_bib updates the bib file, including:
@@ -218,3 +220,11 @@ class BibManager:
                 return False
             else:
                 str_input = input("Please reply with either YES or NO: ")
+    @staticmethod
+    def __chop_list(lst_input):
+        lst_output = []
+        for iter_item in lst_input:
+            lst_chopped = iter_item.split('\n')
+            lst_output = lst_output + lst_chopped
+        return lst_output
+            
