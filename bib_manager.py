@@ -203,7 +203,7 @@ class BibManager:
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-1])
                 lst_tocs_sublayer_print.sort()
                 for iter_item_sublayer in lst_tocs_sublayer_print:
-                    lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                    lst_print = self.dict_refs_categorized[-1][iter_item_sublayer].return_refs_printout()
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
@@ -211,7 +211,7 @@ class BibManager:
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-3])
                 lst_tocs_sublayer_print.sort()
                 for iter_item_sublayer in lst_tocs_sublayer_print:
-                    lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                    lst_print = self.dict_refs_categorized[-3][iter_item_sublayer].return_refs_printout()
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
@@ -219,7 +219,7 @@ class BibManager:
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-2])
                 lst_tocs_sublayer_print.sort()
                 for iter_item_sublayer in lst_tocs_sublayer_print:
-                    lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                    lst_print = self.dict_refs_categorized[-2][iter_item_sublayer].return_refs_printout()
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")                
