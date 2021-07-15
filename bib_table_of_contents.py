@@ -30,7 +30,7 @@ class BibTableOfContents:
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
         self.__creat_sublayer_from_list(lst_table_of_contents)
-    def create_table_of_contents_from_console(self):
+    def create_table_of_contents_from_console(self, lst_console_inputs):
         """
         create_table_of_contents_from_console creats the table of contents from
         multiple-line inputs from the console.
@@ -38,17 +38,6 @@ class BibTableOfContents:
         self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
         self.dict_table_of_contents = {}
-        print("Please key in the table of contents below. " + \
-              "Use TAB(s) for sub sections. Enter a blank row to quit.")
-        lst_console_inputs = []
-        while True:
-            try:
-                str_console_input = input()
-                if str_console_input == '':
-                    break
-            except EOFError:
-                break
-            lst_console_inputs.append(str_console_input)
         for iter_item in lst_console_inputs:
             if 1 <= iter_item.count('\t') + 1 <= 8:
                 self.int_current_layer_pointer = iter_item.count('\t') + 1

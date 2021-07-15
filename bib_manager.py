@@ -73,7 +73,19 @@ class BibManager:
         structure from the console and sets it as the new table of contents.
         """
         self.obj_talbe_of_contents = BibTableOfContents()
-        self.obj_table_of_contents.create_table_of_contents_from_console()
+        print("Please key in the table of contents below. " + \
+              "Use TAB(s) for sub sections. Enter a blank row to quit.")
+        lst_console_inputs = []
+        while True:
+            try:
+                str_console_input = input()
+                if str_console_input == '':
+                    break
+            except EOFError:
+                break
+            lst_console_inputs.append(str_console_input)
+        self.obj_table_of_contents.create_table_of_contents_from_console(
+            lst_console_inputs)
         print("The following table of contents is created.")
         self.show_table_of_contents()
     def add_refs_from_console(self):
