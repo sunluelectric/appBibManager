@@ -8,11 +8,14 @@ from enum import Enum
 from dataclasses import dataclass
 
 class PublicationType(Enum):
-    book = 1
-    article = 2
-    inproceedings = 3
-    online = 4
-    others = 5
+    """
+    class PublicationType is an ENUM class for different publication categories.
+    """
+    BOOK = 1
+    ARTICLE = 2
+    INPROCEEDINGS = 3
+    ONLINE = 4
+    OTHERS = 5
 
 @dataclass
 class BibReference:
@@ -38,7 +41,7 @@ class BibReference:
     str_url : str
     str_urldate : str
     # bib management
-    hex_catid: int
+    hex_catid : int
     def __init__(self):
         self.enum_type = None
         self.str_type = None

@@ -20,61 +20,61 @@ class BibTableOfContents:
     def __init__(self):
         self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
-        self.dict_table_of_contents = {}
-    def create_table_of_contents_from_list(self, lst_table_of_contents : list):
+        self.dict_tocs = {}
+    def create_tocs_from_high_dimension_list(self, lst_tocs : list):
         """
-        create_table_of_contents_from_list creates the table of contents from a
-        multi-dimention list.
+        create_tocs_from_high_dimension_list creates the table of contents from a
+        multi-dimension list.
         """
         self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
-        self.dict_table_of_contents = {}
-        self.__creat_sublayer_from_list(lst_table_of_contents)
-    def create_table_of_contents_from_console(self, lst_console_inputs):
+        self.dict_tocs = {}
+        self.__creat_sublayer_from_list(lst_tocs)
+    def create_tocs_from_text_list(self, lst_text : list):
         """
-        create_table_of_contents_from_console creats the table of contents from
+        create_tocs_from_console creats the table of contents from
         multiple-line inputs from the console.
         """
         self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
-        self.dict_table_of_contents = {}
-        for iter_item in lst_console_inputs:
+        self.dict_tocs = {}
+        for iter_item in lst_text:
             if 1 <= iter_item.count('\t') + 1 <= 8:
                 self.int_current_layer_pointer = iter_item.count('\t') + 1
             else:
                 GeneralErrorMessage("Variable int_current_layer_pointer overflow.")
-            self.__add_item(iter_item.replace('\t', ''))
-    def show_table_of_contents(self):
+            self.__add_section(iter_item.replace('\t', ''))
+    def show_tocs(self):
         """
-        show_table_of_contents shows the table of contents in the console.
+        show_tocs shows the table of contents in the console.
         """
-        lst_table_of_contents_keys = list(self.dict_table_of_contents.keys())
-        lst_table_of_contents_keys.sort()
-        if self.dict_table_of_contents:
+        lst_tocs_keys = list(self.dict_tocs.keys())
+        lst_tocs_keys.sort()
+        if self.dict_tocs:
             print("The table of contents is as follows. ")
             print("Index No. \t Section Name")
-            for iter_item in lst_table_of_contents_keys:
+            for iter_item in lst_tocs_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
                 str_print = hex(iter_item)[-8:] + \
                     "\t" + \
                     "\t"*int_layer_of_item + \
-                    self.dict_table_of_contents[iter_item]
+                    self.dict_tocs[iter_item]
                 print(str_print)
         else:
-            print("The table of contents has not been defined or is empty.")
-    def return_table_of_contents(self):
+            print("The table of contents is empty.")
+    def return_tocs(self):
         """
-        return_table_of_contents returns the table of contents in a list. The
+        return_tocs returns the table of contents in a list. The
         list can be printed in the updated bib file.
         """
         lst_print = []
-        lst_table_of_contents_keys = list(self.dict_table_of_contents.keys())
-        lst_table_of_contents_keys.sort()
-        if self.dict_table_of_contents:
-            for iter_item in lst_table_of_contents_keys:
+        lst_tocs_keys = list(self.dict_tocs.keys())
+        lst_tocs_keys.sort()
+        if self.dict_tocs:
+            for iter_item in lst_tocs_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
                 str_print = "\t"*(int_layer_of_item-1) + \
-                    self.dict_table_of_contents[iter_item]
+                    self.dict_tocs[iter_item]
                 lst_print.append(str_print)
             return lst_print
         return None
@@ -87,11 +87,11 @@ class BibTableOfContents:
             if isinstance(iter_item, list):
                 self.__creat_sublayer_from_list(iter_item)
             else:
-                self.__add_item(iter_item)
+                self.__add_section(iter_item)
         self.__change_layer(-1)
-    def __add_item(self, str_item_name : str):
+    def __add_section(self, str_item_name : str):
         """
-        ____add_item adds a new (sub)section to the current layer
+        __add_section adds a new (sub)section to the current layer
         """
         int_current_layer_section_number = self.__get_current_layer_section_number()
         if 1<= int_current_layer_section_number + 1 <= 15:
@@ -102,7 +102,7 @@ class BibTableOfContents:
                 (self.hex_current_layer_index % 16**(8-self.int_current_layer_pointer))
         else:
             GeneralErrorMessage("Variable int_current_layer_section_number overflow.")
-        self.dict_table_of_contents[self.hex_current_layer_index] =  str_item_name
+        self.dict_tocs[self.hex_current_layer_index] =  str_item_name
     def __change_layer(self, int_change_layer : int):
         """
         __change_layer changes the layer of the index of the talbe of contents
