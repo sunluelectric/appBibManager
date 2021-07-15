@@ -40,8 +40,7 @@ class BibManager:
         print("Current working directory is: " + os.getcwd())
         path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib):\n")
         if os.path.isfile(path_bib):
-            print("The path directs to an exsiting bib file.\
-                  There is a chance that the file be overwritten later.")
+            print("The path directs to an exsiting bib file. There is a chance that the file be overwritten later.")
             if self.__ask_yes_no("Do you want to continue with the path?"):
                 self.path_bib = path_bib
                 print("The path to the bib file has been confirmed.")
@@ -127,17 +126,20 @@ class BibManager:
         self.dict_refs_categorized[-1] = {} # Refs uncategorized
         self.dict_refs_categorized[-2] = {} # Refs with unrecognized catid
         self.dict_refs_categorized[-3] = {} # Refs categorized not under leaf
-        for iter_item in lst_tocs_leaf_keys:
-            self.dict_refs_categorized[iter_item] = {}
-        for iter_key, iter_value in self.dict_refs.items():
-            if iter_value.hex_catid is None:
-                self.dict_refs_categorized[-1][iter_key] = iter_value
-            elif iter_value.hex_catid not in lst_tocs_all_keys:
-                self.dict_refs_categorized[-2][iter_key] = iter_value
-            elif iter_value.hex_catid not in lst_tocs_leaf_keys:
-                self.dict_refs_categorized[-3][iter_key] = iter_value
-            else:
-                self.dict_refs_categorized[iter_value.hex_catid][iter_key] = iter_value
+        if lst_tocs_leaf_keys is not None:
+            for iter_item in lst_tocs_leaf_keys:
+                self.dict_refs_categorized[iter_item] = {}
+            for iter_key, iter_value in self.dict_refs.items():
+                if iter_value.hex_catid is None:
+                    self.dict_refs_categorized[-1][iter_key] = iter_value
+                elif iter_value.hex_catid not in lst_tocs_all_keys:
+                    self.dict_refs_categorized[-2][iter_key] = iter_value
+                elif iter_value.hex_catid not in lst_tocs_leaf_keys:
+                    self.dict_refs_categorized[-3][iter_key] = iter_value
+                else:
+                    self.dict_refs_categorized[iter_value.hex_catid][iter_key] = iter_value
+        else:
+            print("Table of contents needs to be defined before categorization.")
     def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
         """
         update_bib updates the bib file, including:
@@ -152,8 +154,7 @@ class BibManager:
             path_output_bib = self.path_bib
         print("The updated bib file will be stored at " + path_output_bib)
         if os.path.isfile(path_output_bib):
-            print("Warning: This path points to an existing file. \
-                  The file will be over written.")
+            print("Warning: This path points to an existing file. The file will be over written.")
         if self.__ask_yes_no("Do you want to continue with the path?"):
             self.path_bib = path_output_bib
             print("Updating bib file...")
@@ -171,26 +172,24 @@ class BibManager:
                 print(str_print)
                 # table of Contents
                 if self.obj_tocs is None:
-                    str_print = "%% - Table of contents: None"
+                    str_print = "%% - Table of Contents: None"
                     file_bib.write(str_print + "\n")
-                    print(str_print)
                 else:
-                    str_list = "%% - Table of contents: "
+                    str_list = "%% - Table of Contents"
                     file_bib.write(str_list + "\n")
-                    print(str_list)
                     lst_print = self.obj_tocs.return_tocs_printout()
                     for iter_item in lst_print:
                         str_list = "%% - > " + iter_item
                         file_bib.write(str_list + "\n")
-                        print(str_list)
                     str_print = "%% - End of Table of Contents"
                     file_bib.write(str_print + "\n")
-                    print(str_print)
+                    file_bib.write("\n")
                 # references
                 lst_tocs_print = list(self.dict_refs_categorized.keys())
                 lst_tocs_print.sort()
                 for iter_item in lst_tocs_print:
                     if iter_item > 0:
+                        file_bib.write("\n")
                         file_bib.write("%% - " + hex(iter_item) + " " + self.obj_tocs.dict_tocs[iter_item] + "\n")
                         lst_tocs_sublayer_print = list(self.dict_refs_categorized[iter_item])
                         lst_tocs_sublayer_print.sort()
@@ -199,6 +198,7 @@ class BibManager:
                             file_bib.write("\n")
                             for str_print in lst_print:
                                 file_bib.write(str_print + "\n")
+                file_bib.write("%% - \n")
                 file_bib.write("%% - " + "Uncategorized references" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-1])
                 lst_tocs_sublayer_print.sort()
@@ -207,6 +207,7 @@ class BibManager:
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
+                file_bib.write("%% - \n")
                 file_bib.write("%% - " + "References categorized not under leaf" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-3])
                 lst_tocs_sublayer_print.sort()
@@ -215,6 +216,7 @@ class BibManager:
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
+                file_bib.write("%% - \n")
                 file_bib.write("%% - " + "Unrecoganized catid" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-2])
                 lst_tocs_sublayer_print.sort()
@@ -233,10 +235,10 @@ class BibManager:
         flag_detect_tocs = False
         lst_text = []
         for iter_item in lst_file_inputs:
-            if iter_item == '%% - Table of Contents':
+            if iter_item == "%% - Table of Contents":
                 flag_detect_tocs = True
                 continue
-            if iter_item == '%% - End of Table of Contents':
+            if iter_item == "%% - End of Table of Contents":
                 break
             if flag_detect_tocs:
                 lst_text.append(iter_item[7:])

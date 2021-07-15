@@ -109,7 +109,7 @@ class BibReference:
                 str_print = '  ' + 'urldate = {' + self.str_urldate + '},'
                 lst_print.append(str_print)
             if self.hex_catid is not None:
-                str_print = '}' + ' % catid = 0x' + hex(self.hex_catid)
+                str_print = '}' + ' % catid = ' + hex(self.hex_catid)
                 lst_print.append(str_print)
             else:
                 str_print = '}'
