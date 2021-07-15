@@ -16,7 +16,7 @@ class BibTableOfContents:
     """
     hex_current_layer_index : int
     int_current_layer_pointer : int
-    dict_talbe_of_contents : dict
+    dict_tocs : dict
     def __init__(self):
         self.hex_current_layer_index = 0x00000000
         self.int_current_layer_pointer = 0
@@ -62,20 +62,46 @@ class BibTableOfContents:
                 print(str_print)
         else:
             print("The table of contents is empty.")
-    def return_tocs(self):
+    def return_tocs_printout(self):
         """
-        return_tocs returns the table of contents in a list. The
+        return_tocs_printout returns the table of contents in a list. The
         list can be printed in the updated bib file.
         """
-        lst_print = []
-        lst_tocs_keys = list(self.dict_tocs.keys())
-        lst_tocs_keys.sort()
         if self.dict_tocs:
+            lst_print = []
+            lst_tocs_keys = list(self.dict_tocs.keys())
+            lst_tocs_keys.sort()
             for iter_item in lst_tocs_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
                 str_print = "\t"*(int_layer_of_item-1) + \
                     self.dict_tocs[iter_item]
                 lst_print.append(str_print)
+            return lst_print
+        return None
+    def return_tocs_all_keys(self):
+        """
+        return_tocs_all_keys returns all the keys of the table of contents.
+        """
+        if self.dict_tocs:
+            lst_tocs_keys = list(self.dict_tocs.keys())
+            lst_tocs_keys.sort()
+            return lst_tocs_keys
+        return None
+    def return_tocs_leaf_keys(self):
+        """
+        return_tocs_leaf_keys returns all the keys of the table of contents that
+        do not possess any lower layer subsections.
+        """
+        if self.dict_tocs:
+            lst_print = []
+            lst_tocs_keys = list(self.dict_tocs.keys())
+            lst_tocs_keys.sort()
+            for iter_index, iter_item in enumerate(lst_tocs_keys):
+                if iter_index == len(lst_tocs_keys) - 1:
+                    lst_print.append(iter_item)
+                elif hex(iter_item).count('0') <= \
+                    hex(lst_tocs_keys[iter_index + 1]).count('0'):
+                    lst_print.append(iter_item)
             return lst_print
         return None
     def __creat_sublayer_from_list(self, lst_single_list : list):

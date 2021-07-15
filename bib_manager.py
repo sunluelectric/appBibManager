@@ -32,6 +32,7 @@ class BibManager:
         self.path_bib = None
         self.obj_tocs = BibTableOfContents()
         self.dict_refs = {}
+        self.dict_refs_categorized = {}
     def set_path(self):
         """
         set_path sets the path to the bib file.
@@ -112,6 +113,31 @@ class BibManager:
             lst_console_inputs.append(str_console_input)
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__add_refs(lst_console_inputs)
+    def update_dict_refs_categorized(self):
+        """
+        update_dict_refs_categorized updates self.dict_refs_categorized using
+        the table of contents and the registered refs catid
+        The keys of self.dict_refs_categorized are the leafs of the table of
+        contents. Uncategorized/Wrongly categorized refs are put into separate
+        categories.
+        """
+        self.dict_refs_categorized = {}
+        lst_tocs_all_keys = self.obj_tocs.return_tocs_all_keys()
+        lst_tocs_leaf_keys = self.obj_tocs.return_tocs_leaf_keys()
+        self.dict_refs_categorized[-1] = {} # Refs uncategorized
+        self.dict_refs_categorized[-2] = {} # Refs with unrecognized catid
+        self.dict_refs_categorized[-3] = {} # Refs categorized not under leaf
+        for iter_item in lst_tocs_leaf_keys:
+            self.dict_refs_categorized[iter_item] = {}
+        for iter_key, iter_value in self.dict_refs.items():
+            if iter_value.hex_catid is None:
+                self.dict_refs_categorized[-1][iter_key] = iter_value
+            elif iter_value.hex_catid not in lst_tocs_all_keys:
+                self.dict_refs_categorized[-2][iter_key] = iter_value
+            elif iter_value.hex_catid not in lst_tocs_leaf_keys:
+                self.dict_refs_categorized[-3][iter_key] = iter_value
+            else:
+                self.dict_refs_categorized[iter_value.hex_catid][iter_key] = iter_value
     def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
         """
         update_bib updates the bib file, including:
@@ -152,7 +178,7 @@ class BibManager:
                     str_list = "%% - Table of contents: "
                     file_bib.write(str_list + "\n")
                     print(str_list)
-                    lst_print = self.obj_tocs.return_tocs()
+                    lst_print = self.obj_tocs.return_tocs_printout()
                     for iter_item in lst_print:
                         str_list = "%% - > " + iter_item
                         file_bib.write(str_list + "\n")
@@ -160,7 +186,43 @@ class BibManager:
                     str_print = "%% - End of Table of Contents"
                     file_bib.write(str_print + "\n")
                     print(str_print)
-            # references
+                # references
+                lst_tocs_print = list(self.dict_refs_categorized.keys())
+                lst_tocs_print.sort()
+                for iter_item in lst_tocs_print:
+                    if iter_item > 0:
+                        file_bib.write("%% - " + hex(iter_item) + " " + self.obj_tocs.dict_tocs[iter_item] + "\n")
+                        lst_tocs_sublayer_print = list(self.dict_refs_categorized[iter_item])
+                        lst_tocs_sublayer_print.sort()
+                        for iter_item_sublayer in lst_tocs_sublayer_print:
+                            lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                            file_bib.write("\n")
+                            for str_print in lst_print:
+                                file_bib.write(str_print + "\n")
+                file_bib.write("%% - " + "Uncategorized references" + "\n")
+                lst_tocs_sublayer_print = list(self.dict_refs_categorized[-1])
+                lst_tocs_sublayer_print.sort()
+                for iter_item_sublayer in lst_tocs_sublayer_print:
+                    lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                    file_bib.write("\n")
+                    for str_print in lst_print:
+                        file_bib.write(str_print + "\n")
+                file_bib.write("%% - " + "References categorized not under leaf" + "\n")
+                lst_tocs_sublayer_print = list(self.dict_refs_categorized[-3])
+                lst_tocs_sublayer_print.sort()
+                for iter_item_sublayer in lst_tocs_sublayer_print:
+                    lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                    file_bib.write("\n")
+                    for str_print in lst_print:
+                        file_bib.write(str_print + "\n")
+                file_bib.write("%% - " + "Unrecoganized catid" + "\n")
+                lst_tocs_sublayer_print = list(self.dict_refs_categorized[-2])
+                lst_tocs_sublayer_print.sort()
+                for iter_item_sublayer in lst_tocs_sublayer_print:
+                    lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                    file_bib.write("\n")
+                    for str_print in lst_print:
+                        file_bib.write(str_print + "\n")                
         else:
             print("Abort. The bib file is not updated.")
     def __read_tocs_from_bib(self):
@@ -257,10 +319,10 @@ class BibManager:
                     obj_reference.str_publisher = lst_keyinfo[0][1:-1]
                 # end of reference / hex_catid
                 if iter_item[0] == '}':
-                    lst_keyinfo = re.findall('% catid = \d{8}', iter_item)
+                    lst_keyinfo = re.findall('% catid = 0x\d{8}', iter_item)
                     if len(lst_keyinfo) > 0:
-                        lst_keyinfo = re.findall('\d{8}', lst_keyinfo[0])
-                        obj_reference.hex_catid = int(lst_keyinfo[0])
+                        lst_keyinfo = re.findall('0x\d{8}', lst_keyinfo[0])
+                        obj_reference.hex_catid = int(lst_keyinfo[0], 0)
                     self.dict_refs[obj_reference.str_id] = obj_reference
     @staticmethod
     def __ask_yes_no(str_message):
