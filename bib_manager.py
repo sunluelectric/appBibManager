@@ -96,69 +96,74 @@ class BibManager:
             lst_console_inputs.append(str_console_input)
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         for iter_item in lst_console_inputs:
-            # type and id
-            lst_keyinfo = re.findall('@.*{', iter_item)
-            if len(lst_keyinfo) > 0:
-                obj_reference = BibReference()
-                obj_reference.str_type = lst_keyinfo[0][1:-1].lower()
-                if obj_reference.str_type == 'book':
-                    obj_reference.enum_type = PublicationType(1)
-                elif obj_reference.str_type == 'article':
-                    obj_reference.enum_type = PublicationType(2)
-                elif obj_reference.str_type == 'inproceedings':
-                    obj_reference.enum_type = PublicationType(3)
-                elif obj_reference.str_type == 'online':
-                    obj_reference.enum_type = PublicationType(4)
-                else:
-                    obj_reference.enum_type = PublicationType(5)
-            lst_keyinfo = re.findall('@.*{.*,', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*,', lst_keyinfo[0])
-                obj_reference.str_id = lst_keyinfo[0][1:-1]
-            # title
-            lst_keyinfo = re.findall('title ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_title = lst_keyinfo[0][1:-1]
-            # author
-            lst_keyinfo = re.findall('author ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_author = lst_keyinfo[0][1:-1]
-            # journal
-            lst_keyinfo = re.findall('journal ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_journal = lst_keyinfo[0][1:-1]
-            # volume
-            lst_keyinfo = re.findall('volume ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_volume = lst_keyinfo[0][1:-1]
-            # number
-            lst_keyinfo = re.findall('number ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_number = lst_keyinfo[0][1:-1]
-            # pages
-            lst_keyinfo = re.findall('pages ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_pages = lst_keyinfo[0][1:-1]
-            # year
-            lst_keyinfo = re.findall('year ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_year = lst_keyinfo[0][1:-1]
-            # publisher
-            lst_keyinfo = re.findall('publisher ?= ?{.*}', iter_item)
-            if len(lst_keyinfo) > 0:
-                lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
-                obj_reference.str_publisher = lst_keyinfo[0][1:-1]
-            # obj_reference.str_type = ?
-            # end
-            if iter_item == '}':
-                self.dict_refs[obj_reference.str_id] = obj_reference
+            if len(iter_item) > 0:
+                # type and id
+                lst_keyinfo = re.findall('@.*{', iter_item)
+                if len(lst_keyinfo) > 0:
+                    obj_reference = BibReference()
+                    obj_reference.str_type = lst_keyinfo[0][1:-1].lower()
+                    if obj_reference.str_type == 'book':
+                        obj_reference.enum_type = PublicationType(1)
+                    elif obj_reference.str_type == 'article':
+                        obj_reference.enum_type = PublicationType(2)
+                    elif obj_reference.str_type == 'inproceedings':
+                        obj_reference.enum_type = PublicationType(3)
+                    elif obj_reference.str_type == 'online':
+                        obj_reference.enum_type = PublicationType(4)
+                    else:
+                        obj_reference.enum_type = PublicationType(5)
+                lst_keyinfo = re.findall('@.*{.*,', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*,', lst_keyinfo[0])
+                    obj_reference.str_id = lst_keyinfo[0][1:-1]
+                # title
+                lst_keyinfo = re.findall('title ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_title = lst_keyinfo[0][1:-1]
+                # author
+                lst_keyinfo = re.findall('author ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_author = lst_keyinfo[0][1:-1]
+                # journal
+                lst_keyinfo = re.findall('journal ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_journal = lst_keyinfo[0][1:-1]
+                # volume
+                lst_keyinfo = re.findall('volume ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_volume = lst_keyinfo[0][1:-1]
+                # number
+                lst_keyinfo = re.findall('number ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_number = lst_keyinfo[0][1:-1]
+                # pages
+                lst_keyinfo = re.findall('pages ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_pages = lst_keyinfo[0][1:-1]
+                # year
+                lst_keyinfo = re.findall('year ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_year = lst_keyinfo[0][1:-1]
+                # publisher
+                lst_keyinfo = re.findall('publisher ?= ?{.*}', iter_item)
+                if len(lst_keyinfo) > 0:
+                    lst_keyinfo = re.findall('{.*}', lst_keyinfo[0])
+                    obj_reference.str_publisher = lst_keyinfo[0][1:-1]
+                # obj_reference.str_type = ?
+                # end
+                if iter_item[0] == '}':
+                    lst_keyinfo = re.findall('% catid = \d{8}', iter_item)
+                    if len(lst_keyinfo) > 0:
+                        lst_keyinfo = re.findall('\d{8}', lst_keyinfo[0])
+                        obj_reference.hex_catid = int(lst_keyinfo[0])
+                    self.dict_refs[obj_reference.str_id] = obj_reference
     def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
         """
         update_bib updates the bib file, including:
@@ -227,4 +232,3 @@ class BibManager:
             lst_chopped = iter_item.split('\n')
             lst_output = lst_output + lst_chopped
         return lst_output
-            

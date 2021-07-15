@@ -38,7 +38,7 @@ class BibReference:
     str_url : str
     str_urldate : str
     # bib management
-    hex_layer_index : int
+    hex_catid: int
     def __init__(self):
         self.enum_type = None
         self.str_type = None
@@ -59,5 +59,5 @@ class BibReference:
         self.str_url = None
         self.str_urldate = None
         # bib management
-        self.hex_layer_index = None
+        self.hex_catid = None
     
