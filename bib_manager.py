@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Class BibManager defines a bib file managing tool for LaTeX users. 
+Class BibManager defines a bib file managing tool for LaTeX users.
 Class BibManager can create/open a bib file, and do the followings:
 - read existing references and table of contents (if exists; stored as
 metadata) in the bib file;
@@ -27,9 +27,9 @@ class BibManager:
     Class BibManager defines a bib file management tool for LaTeX users.
     """
     def __init__(self):
-        print("Welcome to BibManager.")
         self.path_bib = None
         self.obj_tocs = BibTableOfContents()
+        self.obj_tocs.create_tocs_from_high_dimension_list(['Default Section'])
         self.dict_refs = {}
         self.dict_refs_categorized = {}
     def set_path(self):
@@ -39,7 +39,8 @@ class BibManager:
         print("Current working directory is: " + os.getcwd())
         path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib):\n")
         if os.path.isfile(path_bib):
-            print("The path directs to an exsiting bib file. There is a chance that the file be overwritten later.")
+            print("The path directs to an exsiting bib file. ", end = "")
+            print("There is a chance that the file be overwritten later.")
             if self.__ask_yes_no("Do you want to continue with the path?"):
                 self.path_bib = path_bib
                 print("The path to the bib file has been confirmed.")
@@ -70,17 +71,14 @@ class BibManager:
         """
         show_tocs shows the table of content in the console.
         """
-        if self.obj_tocs is None:
-            print("The table of contents is empty.")
-        else:
-            self.obj_tocs.show_tocs()
+        self.obj_tocs.show_tocs()
     def update_tocs_from_console(self):
         """
-        update_tocs_from_console reads the table of contents 
+        update_tocs_from_console reads the table of contents
         structure from the console and sets it as the new table of contents.
         """
-        print("Please key in the table of contents below. " + \
-              "Use TAB(s) for sub sections. Enter a blank row to quit.")
+        print("Please key in the table of contents below. ", end = "")
+        print("Use TAB(s) for sub sections. Enter a blank row to quit and save the editing.")
         lst_console_inputs = []
         while True:
             try:
@@ -99,8 +97,8 @@ class BibManager:
         add_refs_from_console reads the reference information from the
         console and adds it to the reference dictionary.
         """
-        print("Please key in the reference below. Register ONE reference only. " + \
-              "Enter a blank row to quit.")
+        print("Please key in the reference(s) below. ", end = "")
+        print("Enter a blank row to quit.")
         lst_console_inputs = []
         while True:
             try:
@@ -167,7 +165,7 @@ class BibManager:
                 file_bib.write(str_print + "\n")
                 print(str_print)
                 # author
-                str_print = "%% - Updated by: " + AUTHOR_NAME
+                str_print = "%% - Updated by: " + str_author_name
                 file_bib.write(str_print + "\n")
                 print(str_print)
                 # table of Contents
@@ -190,7 +188,8 @@ class BibManager:
                 for iter_item in lst_tocs_print:
                     if iter_item > 0:
                         file_bib.write("\n")
-                        file_bib.write("%% - " + hex(iter_item) + " " + self.obj_tocs.dict_tocs[iter_item] + "\n")
+                        file_bib.write("%% - " + hex(iter_item) + " " + \
+                                       self.obj_tocs.dict_tocs[iter_item] + "\n")
                         lst_tocs_sublayer_print = list(self.dict_refs_categorized[iter_item])
                         lst_tocs_sublayer_print.sort()
                         for iter_item_sublayer in lst_tocs_sublayer_print:
@@ -224,13 +223,13 @@ class BibManager:
                     lst_print = self.dict_refs_categorized[-2][iter_item_sublayer].return_refs_printout()
                     file_bib.write("\n")
                     for str_print in lst_print:
-                        file_bib.write(str_print + "\n")                
+                        file_bib.write(str_print + "\n")
         else:
             print("Abort. The bib file is not updated.")
     def __read_tocs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
-            lst_file_inputs = [str_fileinput.strip() 
+            lst_file_inputs = [str_fileinput.strip()
                                for str_fileinput in lst_file_inputs]
         flag_detect_tocs = False
         lst_text = []
@@ -247,16 +246,20 @@ class BibManager:
             print("The following table of contents has been created.")
             self.show_tocs()
         else:
-            print("Table of contents is not detected from the bib file.")
+            print("Table of contents is not detected from the bib file.", end = "")
+            print("A default table of contents has been registered.")
+            self.obj_tocs = BibTableOfContents()
+            self.obj_tocs.create_tocs_from_high_dimension_list(['Default Section'])
+            self.show_tocs()
     def __add_refs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
-            lst_file_inputs = [str_fileinput.strip() 
+            lst_file_inputs = [str_fileinput.strip()
                                for str_fileinput in lst_file_inputs]
         self.__add_refs(lst_file_inputs)
     def __update_tocs(self, lst_text):
         self.obj_tocs = BibTableOfContents()
-        self.obj_tocs.create_tocs_from_text_list(lst_text)     
+        self.obj_tocs.create_tocs_from_text_list(lst_text)
     def __add_refs(self, lst_text):
         for iter_item in lst_text:
             if len(iter_item) > 0:
@@ -321,9 +324,9 @@ class BibManager:
                     obj_reference.str_publisher = lst_keyinfo[0][1:-1]
                 # end of reference / hex_catid
                 if iter_item[0] == '}':
-                    lst_keyinfo = re.findall('% catid = 0x\d{8}', iter_item)
+                    lst_keyinfo = re.findall(r'% catid = 0x\d{8}', iter_item)
                     if len(lst_keyinfo) > 0:
-                        lst_keyinfo = re.findall('0x\d{8}', lst_keyinfo[0])
+                        lst_keyinfo = re.findall(r'0x\d{8}', lst_keyinfo[0])
                         obj_reference.hex_catid = int(lst_keyinfo[0], 0)
                     self.dict_refs[obj_reference.str_id] = obj_reference
     @staticmethod
@@ -332,10 +335,9 @@ class BibManager:
         while True:
             if str_input.upper() == 'YES':
                 return True
-            elif str_input.upper() == 'NO':
+            if str_input.upper() == 'NO':
                 return False
-            else:
-                str_input = input("Please reply with either YES or NO: ")
+            str_input = input("Please reply with either YES or NO: ")
     @staticmethod
     def __chop_list(lst_input):
         lst_output = []

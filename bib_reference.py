@@ -20,7 +20,7 @@ class PublicationType(Enum):
 @dataclass
 class BibReference:
     """
-    Class BibReference is a dataclass used to record a single reference information.
+    Class BibReference is a dataclass used to record single reference information.
     """
     enum_type : PublicationType
     str_type : str
