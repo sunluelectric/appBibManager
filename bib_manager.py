@@ -17,6 +17,7 @@ metadata) in the bib file;
 import os
 import re
 from datetime import datetime
+from multipledispatch import dispatch
 from bib_table_of_contents import BibTableOfContents
 from bib_reference import PublicationType, BibReference
 
@@ -110,12 +111,26 @@ class BibManager:
             lst_console_inputs.append(str_console_input)
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__add_refs(lst_console_inputs)
-    def update_refs_catid(self):
+    @dispatch(str)
+    def update_catid(self, str_id : str):
         """
-        update_refs_catid updates the catid of references according to the
-        inputs from user via the console.
+        update_catid updates the catid for one or multiple references.
         """
-        pass
+        if str_id == 'uncategorized':
+            self.update_dict_refs_categorized()
+            lst_id = list(self.dict_refs_categorized[-1].keys())
+            for iter_item in lst_id:
+                if not self.__update_catid(iter_item):
+                    break
+        else:
+            self.__update_catid(str_id)
+    @dispatch(list)
+    def update_catid(self, lst_id : list):
+        """
+        update_catid updates the catid for one or multiple references.
+        """
+        for iter_item in lst_id:
+            _ = self.__update_catid(iter_item)
     def update_dict_refs_categorized(self):
         """
         update_dict_refs_categorized updates self.dict_refs_categorized using
@@ -263,6 +278,16 @@ class BibManager:
             lst_file_inputs = [str_fileinput.strip()
                                for str_fileinput in lst_file_inputs]
         self.__add_refs(lst_file_inputs)
+    def __update_catid(self, str_id):
+        if str_id in self.dict_refs:
+            str_catid = input("Please key in the catid for reference " + str_id + ": 0x")
+            try:
+                self.dict_refs[str_id].hex_catid = int(str_catid, 16)
+                return True
+            except:
+                return False
+        print("Reference " + str_id + " is not registered.")
+        return False
     def __update_tocs(self, lst_text):
         self.obj_tocs = BibTableOfContents()
         self.obj_tocs.create_tocs_from_text_list(lst_text)
