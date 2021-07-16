@@ -110,6 +110,12 @@ class BibManager:
             lst_console_inputs.append(str_console_input)
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__add_refs(lst_console_inputs)
+    def update_refs_catid(self):
+        """
+        update_refs_catid updates the catid of references according to the
+        inputs from user via the console.
+        """
+        pass
     def update_dict_refs_categorized(self):
         """
         update_dict_refs_categorized updates self.dict_refs_categorized using
