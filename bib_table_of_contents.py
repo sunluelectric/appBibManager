@@ -51,7 +51,6 @@ class BibTableOfContents:
         lst_tocs_keys = list(self.dict_tocs.keys())
         lst_tocs_keys.sort()
         if self.dict_tocs:
-            print("The table of contents is as follows. ")
             print("Index No. \t Section Name")
             for iter_item in lst_tocs_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')

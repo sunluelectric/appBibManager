@@ -27,20 +27,16 @@ class BibReference:
     str_id : str
     str_title : str
     str_author : str
-    # book and article
     str_journal : str
     str_volume : str
     str_number : str
     str_pages : str
     str_year : str
     str_publisher : str
-    # inproceedings
     str_booktitle : str
     str_organization : str
-    # online
     str_url : str
     str_urldate : str
-    # bib management
     hex_catid : int
     def __init__(self):
         self.enum_type = None

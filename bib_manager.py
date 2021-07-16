@@ -19,7 +19,6 @@ import re
 from datetime import datetime
 from bib_table_of_contents import BibTableOfContents
 from bib_reference import PublicationType, BibReference
-# from self_error import GeneralErrorMessage
 
 AUTHOR_NAME = "SUN LU"
 
@@ -91,6 +90,7 @@ class BibManager:
             except EOFError:
                 break
             lst_console_inputs.append(str_console_input)
+        lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__update_tocs(lst_console_inputs)
         print("The following table of contents has been created.")
         self.show_tocs()
@@ -127,7 +127,7 @@ class BibManager:
         self.dict_refs_categorized[-2] = {} # Refs with unrecognized catid
         self.dict_refs_categorized[-3] = {} # Refs categorized not under leaf
         if lst_tocs_leaf_keys is not None:
-            for iter_item in lst_tocs_leaf_keys:
+            for iter_item in lst_tocs_all_keys:
                 self.dict_refs_categorized[iter_item] = {}
             for iter_key, iter_value in self.dict_refs.items():
                 if iter_value.hex_catid is None:
@@ -198,7 +198,7 @@ class BibManager:
                             file_bib.write("\n")
                             for str_print in lst_print:
                                 file_bib.write(str_print + "\n")
-                file_bib.write("%% - \n")
+                file_bib.write("\n")
                 file_bib.write("%% - " + "Uncategorized references" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-1])
                 lst_tocs_sublayer_print.sort()
@@ -207,7 +207,7 @@ class BibManager:
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
-                file_bib.write("%% - \n")
+                file_bib.write("\n")
                 file_bib.write("%% - " + "References categorized not under leaf" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-3])
                 lst_tocs_sublayer_print.sort()
@@ -216,7 +216,7 @@ class BibManager:
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
-                file_bib.write("%% - \n")
+                file_bib.write("\n")
                 file_bib.write("%% - " + "Unrecoganized catid" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-2])
                 lst_tocs_sublayer_print.sort()
