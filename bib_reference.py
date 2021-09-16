@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Class BibReference is a dataclass used to record a single reference information.
+Class BibReference is a dataclass that represents a reference.
 @author: github.com/sunluelectric
 """
 
@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 class PublicationType(Enum):
     """
-    class PublicationType is an ENUM class for different publication categories.
+    class PublicationType is an enum class for different publication categories.
     """
     BOOK = 1
     ARTICLE = 2
@@ -20,7 +20,7 @@ class PublicationType(Enum):
 @dataclass
 class BibReference:
     """
-    Class BibReference is a dataclass used to record single reference information.
+    Class BibReference is a dataclass that represents a reference.
     """
     enum_type : PublicationType
     str_type : str
@@ -61,8 +61,8 @@ class BibReference:
         self.hex_catid = None
     def return_refs_printout(self):
         """
-        return_refs_printout returns the reference information in a list. The
-        list can be printed in the updated bib file.
+        return_refs_printout returns the reference information in a list with
+        printout format.
         """
         if (self.str_id is not None) and (self.str_type is not None):
             lst_print = []
@@ -110,7 +110,7 @@ class BibReference:
             else:
                 str_print = '}'
                 lst_print.append(str_print)
-            lst_print[-2] = lst_print[-2][:-1]
+            lst_print[-2] = lst_print[-2][:-1] # delete the comma in the last valid attribute
             return lst_print
         return None
     

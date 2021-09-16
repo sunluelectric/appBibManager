@@ -8,7 +8,9 @@ metadata) in the bib file;
 - insert a new reference into the bib file;
 - search/edit/remove an existing reference;
 - sort references;
-- global replace, e.g. "GUI" to "{GUI}" in title, "System" to "Syst." in journal;
+- global search and replace, e.g. "GUI" to "{GUI}" in title, "System" to "Syst." in journal;
+- (optional) statistics analysis, such as distribution by year
+- (optional) graphical user interface
 - (optional) syncronize with Google Scholar;
 - generate/update the bib file.
 @author: github.com/sunluelectric
@@ -30,12 +32,23 @@ class BibManager:
     def __init__(self):
         self.path_bib = None
         self.obj_tocs = BibTableOfContents()
-        self.obj_tocs.create_tocs_from_high_dimension_list(['Default Section'])
+        self.obj_tocs.create_tocs_from_multidimensional_list(['Default Section'])
         self.dict_refs = {}
         self.dict_refs_categorized = {}
-    def set_path(self):
+    def set_path(self, path_bib):
         """
         set_path sets the path to the bib file.
+        """
+        if os.path.isfile(path_bib):
+            pass
+        else:
+            with open(self.path_bib, 'w') as file_bib:
+                file_bib.write("%% - Name of bib file: " + self.path_bib.split('/')[-1] + "\n")
+        self.path_bib = path_bib
+        print("The path to the bib file has been confirmed.")
+    def set_path_from_console(self):
+        """
+        set_path_from_console sets the path to the bib file from python console or prompt.
         """
         print("Current working directory is: " + os.getcwd())
         path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib):\n")
@@ -68,15 +81,15 @@ class BibManager:
         print("A total of " + str(len(self.dict_refs)) + \
               " publication(s) have been registered.")
         print("Reading completed.")
-    def show_tocs(self):
+    def display_tocs(self):
         """
-        show_tocs shows the table of content in the console.
+        display_tocs shows the table of content in the console.
         """
-        self.obj_tocs.show_tocs()
+        self.obj_tocs.display_tocs()
     def update_tocs_from_console(self):
         """
-        update_tocs_from_console reads the table of contents
-        structure from the console and sets it as the new table of contents.
+        update_tocs_from_console reads the table of contents structure from the
+        console and sets it as the new table of contents.
         """
         print("Please key in the table of contents below. ", end = "")
         print("Use TAB(s) for sub sections. Enter a blank row to quit and save the editing.")
@@ -92,7 +105,7 @@ class BibManager:
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__update_tocs(lst_console_inputs)
         print("The following table of contents has been created.")
-        self.show_tocs()
+        self.display_tocs()
     def add_refs_from_console(self):
         """
         add_refs_from_console reads the reference information from the
@@ -265,13 +278,13 @@ class BibManager:
         if flag_detect_tocs:
             self.__update_tocs(lst_text)
             print("The following table of contents has been created.")
-            self.show_tocs()
+            self.display_tocs()
         else:
             print("Table of contents is not detected from the bib file.", end = "")
             print("A default table of contents has been registered.")
             self.obj_tocs = BibTableOfContents()
-            self.obj_tocs.create_tocs_from_high_dimension_list(['Default Section'])
-            self.show_tocs()
+            self.obj_tocs.create_tocs_from_multidimensional_list(['Default Section'])
+            self.display_tocs()
     def __add_refs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
@@ -290,7 +303,7 @@ class BibManager:
         return False
     def __update_tocs(self, lst_text):
         self.obj_tocs = BibTableOfContents()
-        self.obj_tocs.create_tocs_from_text_list(lst_text)
+        self.obj_tocs.create_tocs_from_tab_list(lst_text)
     def __add_refs(self, lst_text):
         for iter_item in lst_text:
             if len(iter_item) > 0:
