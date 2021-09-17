@@ -30,20 +30,20 @@ class BibTableOfContents:
         self.int_section_layer = 0
         self.dict_tocs = {}
         self.__creat_sublayer_from_multidimensional_list(lst_tocs)
-    def create_tocs_from_tab_list(self, lst_text : list):
+    def create_tocs_from_space_list(self, lst_text : list):
         """
-        create_tocs_from_tab_list creats the table of contents from a list of sections
+        create_tocs_from_space_list creats the table of contents from a list of sections
         with tab used to describe subsection layer index.
         """
         self.hex_section_index = 0x00000000
         self.int_section_layer = 0
         self.dict_tocs = {}
         for iter_item in lst_text:
-            if 1 <= iter_item.count('\t') + 1 <= 8:
-                self.int_section_layer = iter_item.count('\t') + 1
+            if 1 <= (len(iter_item) - len(iter_item.lstrip(' '))) // 4 + 1 <= 8:
+                self.int_section_layer = (len(iter_item) - len(iter_item.lstrip(' '))) // 4 + 1
             else:
                 GeneralErrorMessage("Variable int_section_layer overflow.")
-            self.__add_section(iter_item.replace('\t', ''))
+            self.__add_section(iter_item.lstrip(' '))
     def display_tocs(self):
         """
         display_tocs shows the table of contents in the console.
@@ -51,10 +51,10 @@ class BibTableOfContents:
         lst_tocs_keys = list(self.dict_tocs.keys())
         lst_tocs_keys.sort()
         if self.dict_tocs:
-            print("Index No. \t Section Name")
+            print("Index No.   Section Name")
             for iter_item in lst_tocs_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
-                str_print = hex(iter_item)[-8:] + "\t"*int_layer_of_item + self.dict_tocs[iter_item]
+                str_print = hex(iter_item)[-8:] + "    "*int_layer_of_item + self.dict_tocs[iter_item]
                 print(str_print)
         else:
             print("The table of contents is empty.")
@@ -68,7 +68,7 @@ class BibTableOfContents:
             lst_tocs_keys.sort()
             for iter_item in lst_tocs_keys:
                 int_layer_of_item = 9 - hex(iter_item).count('0')
-                str_print = "\t"*(int_layer_of_item-1) + self.dict_tocs[iter_item]
+                str_print = '    '*(int_layer_of_item-1) + self.dict_tocs[iter_item]
                 lst_print.append(str_print)
             return lst_print
         return None

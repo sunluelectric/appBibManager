@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Class BibManager defines a bib file managing tool for LaTeX users.
-Class BibManager can create/open a bib file, and do the followings:
+Class BibManager defines a bib file managing tool for LaTeX users. Class BibManager
+can create/open a bib file, and do the followings:
 - read existing references and table of contents (if exists; stored as
 metadata) in the bib file;
-- create/show tree-structure table of contents;
-- insert a new reference into the bib file;
+- create table of contents;
+- show table of contents;
+- add a new reference;
 - search/edit/remove an existing reference;
+- categorize reference;
 - sort references;
 - global search and replace, e.g. "GUI" to "{GUI}" in title, "System" to "Syst." in journal;
 - (optional) statistics analysis, such as distribution by year
@@ -19,7 +21,6 @@ metadata) in the bib file;
 import os
 import re
 from datetime import datetime
-from multipledispatch import dispatch
 from bib_table_of_contents import BibTableOfContents
 from bib_reference import PublicationType, BibReference
 
@@ -48,7 +49,7 @@ class BibManager:
         print("The path to the bib file has been confirmed.")
     def set_path_from_console(self):
         """
-        set_path_from_console sets the path to the bib file from python console or prompt.
+        set_path_from_console sets the path to the bib file from console.
         """
         print("Current working directory is: " + os.getcwd())
         path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib):\n")
@@ -124,26 +125,25 @@ class BibManager:
             lst_console_inputs.append(str_console_input)
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__add_refs(lst_console_inputs)
-    @dispatch(str)
-    def update_catid(self, str_id : str):
+    def update_catid(self, strlst_id : str):
         """
-        update_catid updates the catid for one or multiple references.
+        update_catid updates the catid for one or multiple references, depending
+        on whether str_id or lst_id is used as input.
         """
-        if str_id == 'uncategorized':
-            self.update_dict_refs_categorized()
-            lst_id = list(self.dict_refs_categorized[-1].keys())
+        if isinstance(strlst_id, str):
+            if strlst_id == 'uncategorized':
+                self.update_dict_refs_categorized()
+                lst_id = list(self.dict_refs_categorized[-1].keys())
+                for iter_item in lst_id:
+                    if not self.__update_catid(iter_item):
+                        break
+            else:
+                self.__update_catid(strlst_id)
+        elif isinstance(strlst_id, list):
             for iter_item in lst_id:
-                if not self.__update_catid(iter_item):
-                    break
+                _ = self.__update_catid(iter_item)
         else:
-            self.__update_catid(str_id)
-    @dispatch(list)
-    def update_catid(self, lst_id : list):
-        """
-        update_catid updates the catid for one or multiple references.
-        """
-        for iter_item in lst_id:
-            _ = self.__update_catid(iter_item)
+            print('It is not clear which reference catid shall be updated.')
     def update_dict_refs_categorized(self):
         """
         update_dict_refs_categorized updates self.dict_refs_categorized using
@@ -182,6 +182,7 @@ class BibManager:
         - (optional, by default) sort the references;
         - print references in the bib file.
         """
+        self.update_dict_refs_categorized()
         if path_output_bib == 'default':
             path_output_bib = self.path_bib
         print("The updated bib file will be stored at " + path_output_bib)
@@ -263,8 +264,7 @@ class BibManager:
     def __read_tocs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
-            lst_file_inputs = [str_fileinput.strip()
-                               for str_fileinput in lst_file_inputs]
+            lst_file_inputs = [str_fileinput.strip() for str_fileinput in lst_file_inputs]
         flag_detect_tocs = False
         lst_text = []
         for iter_item in lst_file_inputs:
@@ -281,15 +281,14 @@ class BibManager:
             self.display_tocs()
         else:
             print("Table of contents is not detected from the bib file.", end = "")
-            print("A default table of contents has been registered.")
+            print("A default table of contents has been created.")
             self.obj_tocs = BibTableOfContents()
             self.obj_tocs.create_tocs_from_multidimensional_list(['Default Section'])
             self.display_tocs()
     def __add_refs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
-            lst_file_inputs = [str_fileinput.strip()
-                               for str_fileinput in lst_file_inputs]
+            lst_file_inputs = [str_fileinput.strip() for str_fileinput in lst_file_inputs]
         self.__add_refs(lst_file_inputs)
     def __update_catid(self, str_id):
         if str_id in self.dict_refs:
@@ -299,11 +298,11 @@ class BibManager:
                 return True
             except:
                 return False
-        print("Reference " + str_id + " is not registered.")
+        print("Reference " + str_id + " cannot be found.")
         return False
     def __update_tocs(self, lst_text):
         self.obj_tocs = BibTableOfContents()
-        self.obj_tocs.create_tocs_from_tab_list(lst_text)
+        self.obj_tocs.create_tocs_from_space_list(lst_text)
     def __add_refs(self, lst_text):
         for iter_item in lst_text:
             if len(iter_item) > 0:
