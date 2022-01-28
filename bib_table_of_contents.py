@@ -33,7 +33,7 @@ class BibTableOfContents:
     def create_tocs_from_space_list(self, lst_text : list):
         """
         create_tocs_from_space_list creats the table of contents from a list of sections
-        with tab used to describe subsection layer index.
+        with 4 spaces used to describe subsection layer index.
         """
         self.hex_section_index = 0x00000000
         self.int_section_layer = 0

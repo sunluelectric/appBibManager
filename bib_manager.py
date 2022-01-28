@@ -93,7 +93,7 @@ class BibManager:
         console and sets it as the new table of contents.
         """
         print("Please key in the table of contents below. ", end = "")
-        print("Use TAB(s) for sub sections. Enter a blank row to quit and save the editing.")
+        print("Use four (4) spaces for sub sections of each layer. Enter a blank row to quit and save the editing.")
         lst_console_inputs = []
         while True:
             try:
