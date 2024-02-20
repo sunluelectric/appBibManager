@@ -17,27 +17,49 @@ class PublicationType(Enum):
     ONLINE = 4
     OTHERS = 5
 
+from dataclasses import dataclass
+
 @dataclass
 class BibReference:
     """
     Class BibReference is a dataclass that represents a reference.
+
+    Attributes:
+    - enum_type (PublicationType): The type of publication.
+    - str_type (str): The string representation of the publication type.
+    - str_id (str): The ID of the reference.
+    - str_title (str): The title of the reference.
+    - str_author (str): The author(s) of the reference.
+    - str_journal (str): The journal name (for articles and books).
+    - str_volume (str): The volume number (for articles and books).
+    - str_number (str): The number (for articles and books).
+    - str_pages (str): The page numbers (for articles and books).
+    - str_year (str): The year of publication.
+    - str_publisher (str): The publisher (for books).
+    - str_booktitle (str): The title of the book (for inproceedings).
+    - str_organization (str): The organization (for inproceedings).
+    - str_url (str): The URL of the reference (for online references).
+    - str_urldate (str): The date when the URL was accessed (for online references).
+    - hex_catid (int): The hexadecimal category ID (for bib management).
     """
-    enum_type : PublicationType
-    str_type : str
-    str_id : str
-    str_title : str
-    str_author : str
-    str_journal : str
-    str_volume : str
-    str_number : str
-    str_pages : str
-    str_year : str
-    str_publisher : str
-    str_booktitle : str
-    str_organization : str
-    str_url : str
-    str_urldate : str
-    hex_catid : int
+
+    enum_type: PublicationType
+    str_type: str
+    str_id: str
+    str_title: str
+    str_author: str
+    str_journal: str
+    str_volume: str
+    str_number: str
+    str_pages: str
+    str_year: str
+    str_publisher: str
+    str_booktitle: str
+    str_organization: str
+    str_url: str
+    str_urldate: str
+    hex_catid: int
+
     def __init__(self):
         self.enum_type = None
         self.str_type = None
@@ -59,10 +81,14 @@ class BibReference:
         self.str_urldate = None
         # bib management
         self.hex_catid = None
+
     def return_refs_printout(self):
         """
         return_refs_printout returns the reference information in a list with
         printout format.
+
+        Returns:
+        - list: A list containing the reference information in printout format.
         """
         if (self.str_id is not None) and (self.str_type is not None):
             lst_print = []

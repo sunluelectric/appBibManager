@@ -13,9 +13,8 @@ metadata) in the bib file;
 - global search and replace, e.g. "GUI" to "{GUI}" in title, "System" to "Syst." in journal;
 - (optional) statistics analysis, such as distribution by year
 - (optional) graphical user interface
-- (optional) syncronize with Google Scholar;
+- (optional) synchronize with Google Scholar;
 - generate/update the bib file.
-@author: github.com/sunluelectric
 """
 
 import os
@@ -54,7 +53,7 @@ class BibManager:
         print("Current working directory is: " + os.getcwd())
         path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib):\n")
         if os.path.isfile(path_bib):
-            print("The path directs to an exsiting bib file. ", end = "")
+            print("The path directs to an existing bib file. ", end = "")
             print("There is a chance that the file be overwritten later.")
             if self.__ask_yes_no("Do you want to continue with the path?"):
                 self.path_bib = path_bib

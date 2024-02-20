@@ -26,14 +26,32 @@ class GeneralErrorMessage(SelfDefinedError):
 
 class GeneralWarnningMessage():
     """
-    GeneralWarningMessage prints the warning message.
+    GeneralWarnningMessage is a class that prints warning messages.
     """
     @staticmethod
     def print_warning_message(*args):
         """
         print_warning_message prints the warning message.
+
+        Args:
+            *args: Variable number of arguments representing the warning message.
+
+        Returns:
+            None
         """
         if len(args)>0:
             print("Warning: +" + args[0] + "\n")
         else:
-            print("Warning: A warning is printed by GeneralWarningMessage.\n")
+            print("Warning: A warning is raised by GeneralWarnningMessage.\n")
+
+class VariableDebugger():
+    """
+    VariableDebugger prints the variable name and value.
+    """
+    @staticmethod
+    def print_variable(var_dict):
+        """
+        print_variable prints the variable name and value.
+        """
+        for var_name, var_value in var_dict.items():
+            print("Debug: " + var_name + " = " + str(var_value) + "\n")
