@@ -25,16 +25,20 @@ from bib_reference import PublicationType, BibReference
 
 AUTHOR_NAME = "SUN LU"
 
+
 class BibManager:
     """
     Class BibManager defines a bib file management tool for LaTeX users.
     """
+
     def __init__(self):
         self.path_bib = None
         self.obj_tocs = BibTableOfContents()
-        self.obj_tocs.create_tocs_from_multidimensional_list(['Default Section'])
+        self.obj_tocs.create_tocs_from_multidimensional_list(
+            ['Default Section'])
         self.dict_refs = {}
         self.dict_refs_categorized = {}
+
     def set_path(self, path_bib):
         """
         set_path sets the path to the bib file.
@@ -43,17 +47,20 @@ class BibManager:
             pass
         else:
             with open(self.path_bib, 'w') as file_bib:
-                file_bib.write("%% - Name of bib file: " + self.path_bib.split('/')[-1] + "\n")
+                file_bib.write("%% - Name of bib file: " +
+                               self.path_bib.split('/')[-1] + "\n")
         self.path_bib = path_bib
         print("The path to the bib file has been confirmed.")
+
     def set_path_from_console(self):
         """
         set_path_from_console sets the path to the bib file from console.
         """
         print("Current working directory is: " + os.getcwd())
-        path_bib = input("Please enter the path to the bib file (e.g.: ./refs.bib):\n")
+        path_bib = input(
+            "Please enter the path to the bib file (e.g.: ./refs.bib):\n")
         if os.path.isfile(path_bib):
-            print("The path directs to an existing bib file. ", end = "")
+            print("The path directs to an existing bib file. ", end="")
             print("There is a chance that the file be overwritten later.")
             if self.__ask_yes_no("Do you want to continue with the path?"):
                 self.path_bib = path_bib
@@ -65,8 +72,10 @@ class BibManager:
             print("The path to the bib file has been confirmed.\
                   A new bib file will be created at " + self.path_bib)
             with open(self.path_bib, 'w') as file_bib:
-                file_bib.write("%% - Name of bib file: " + self.path_bib.split('/')[-1] + "\n")
+                file_bib.write("%% - Name of bib file: " +
+                               self.path_bib.split('/')[-1] + "\n")
             print("A new bib file has been created at " + self.path_bib)
+
     def read_bib(self):
         """
         readbib reads references items from self.path_bib, and store them in
@@ -78,20 +87,22 @@ class BibManager:
         self.__read_tocs_from_bib()
         print("Adding references from the bib file...")
         self.__add_refs_from_bib()
-        print("A total of " + str(len(self.dict_refs)) + \
+        print("A total of " + str(len(self.dict_refs)) +
               " publication(s) have been registered.")
         print("Reading completed.")
+
     def display_tocs(self):
         """
         display_tocs shows the table of content in the console.
         """
         self.obj_tocs.display_tocs()
+
     def update_tocs_from_console(self):
         """
         update_tocs_from_console reads the table of contents structure from the
         console and sets it as the new table of contents.
         """
-        print("Please key in the table of contents below. ", end = "")
+        print("Please key in the table of contents below. ", end="")
         print("Use four (4) spaces for sub sections of each layer. Enter a blank row to quit and save the editing.")
         lst_console_inputs = []
         while True:
@@ -106,12 +117,13 @@ class BibManager:
         self.__update_tocs(lst_console_inputs)
         print("The following table of contents has been created.")
         self.display_tocs()
+
     def add_refs_from_console(self):
         """
         add_refs_from_console reads the reference information from the
         console and adds it to the reference dictionary.
         """
-        print("Please key in the reference(s) below. ", end = "")
+        print("Please key in the reference(s) below. ", end="")
         print("Enter a blank row to quit.")
         lst_console_inputs = []
         while True:
@@ -124,7 +136,8 @@ class BibManager:
             lst_console_inputs.append(str_console_input)
         lst_console_inputs = self.__chop_list(lst_console_inputs)
         self.__add_refs(lst_console_inputs)
-    def update_catid(self, strlst_id : str):
+
+    def update_catid(self, strlst_id: str):
         """
         update_catid updates the catid for one or multiple references, depending
         on whether str_id or lst_id is used as input.
@@ -143,6 +156,7 @@ class BibManager:
                 _ = self.__update_catid(iter_item)
         else:
             print('It is not clear which reference catid shall be updated.')
+
     def update_dict_refs_categorized(self):
         """
         update_dict_refs_categorized updates self.dict_refs_categorized using
@@ -154,9 +168,9 @@ class BibManager:
         self.dict_refs_categorized = {}
         lst_tocs_all_keys = self.obj_tocs.return_tocs_all_keys()
         lst_tocs_leaf_keys = self.obj_tocs.return_tocs_leaf_keys()
-        self.dict_refs_categorized[-1] = {} # Refs uncategorized
-        self.dict_refs_categorized[-2] = {} # Refs with unrecognized catid
-        self.dict_refs_categorized[-3] = {} # Refs categorized not under leaf
+        self.dict_refs_categorized[-1] = {}  # Refs uncategorized
+        self.dict_refs_categorized[-2] = {}  # Refs with unrecognized catid
+        self.dict_refs_categorized[-3] = {}  # Refs categorized not under leaf
         if lst_tocs_leaf_keys is not None:
             for iter_item in lst_tocs_all_keys:
                 self.dict_refs_categorized[iter_item] = {}
@@ -171,7 +185,8 @@ class BibManager:
                     self.dict_refs_categorized[iter_value.hex_catid][iter_key] = iter_value
         else:
             print("Table of contents needs to be defined before categorization.")
-    def update_bib(self, path_output_bib = 'default', str_author_name = AUTHOR_NAME):
+
+    def update_bib(self, path_output_bib='default', str_author_name=AUTHOR_NAME):
         """
         update_bib updates the bib file, including:
         - print the path to the updated bib file (by default the same path as
@@ -186,13 +201,15 @@ class BibManager:
             path_output_bib = self.path_bib
         print("The updated bib file will be stored at " + path_output_bib)
         if os.path.isfile(path_output_bib):
-            print("Warning: This path points to an existing file. The file will be over written.")
+            print(
+                "Warning: This path points to an existing file. The file will be over written.")
         if self.__ask_yes_no("Do you want to continue with the path?"):
             self.path_bib = path_output_bib
             print("Updating bib file...")
             with open(self.path_bib, 'w') as file_bib:
                 # name
-                file_bib.write("%% - Name of bib file: " + self.path_bib.split('/')[-1] + "\n")
+                file_bib.write("%% - Name of bib file: " +
+                               self.path_bib.split('/')[-1] + "\n")
                 # time
                 str_print = "%% - Latest updated time: " + \
                     datetime.now().strftime("%B %d, %Y %H:%M:%S")
@@ -222,12 +239,14 @@ class BibManager:
                 for iter_item in lst_tocs_print:
                     if iter_item > 0:
                         file_bib.write("\n")
-                        file_bib.write("%% - " + hex(iter_item) + " " + \
+                        file_bib.write("%% - " + hex(iter_item) + " " +
                                        self.obj_tocs.dict_tocs[iter_item] + "\n")
-                        lst_tocs_sublayer_print = list(self.dict_refs_categorized[iter_item])
+                        lst_tocs_sublayer_print = list(
+                            self.dict_refs_categorized[iter_item])
                         lst_tocs_sublayer_print.sort()
                         for iter_item_sublayer in lst_tocs_sublayer_print:
-                            lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout()
+                            lst_print = self.dict_refs_categorized[iter_item][iter_item_sublayer].return_refs_printout(
+                            )
                             file_bib.write("\n")
                             for str_print in lst_print:
                                 file_bib.write(str_print + "\n")
@@ -236,16 +255,19 @@ class BibManager:
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-1])
                 lst_tocs_sublayer_print.sort()
                 for iter_item_sublayer in lst_tocs_sublayer_print:
-                    lst_print = self.dict_refs_categorized[-1][iter_item_sublayer].return_refs_printout()
+                    lst_print = self.dict_refs_categorized[-1][iter_item_sublayer].return_refs_printout(
+                    )
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
                 file_bib.write("\n")
-                file_bib.write("%% - " + "References categorized not under leaf" + "\n")
+                file_bib.write(
+                    "%% - " + "References categorized not under leaf" + "\n")
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-3])
                 lst_tocs_sublayer_print.sort()
                 for iter_item_sublayer in lst_tocs_sublayer_print:
-                    lst_print = self.dict_refs_categorized[-3][iter_item_sublayer].return_refs_printout()
+                    lst_print = self.dict_refs_categorized[-3][iter_item_sublayer].return_refs_printout(
+                    )
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
@@ -254,16 +276,19 @@ class BibManager:
                 lst_tocs_sublayer_print = list(self.dict_refs_categorized[-2])
                 lst_tocs_sublayer_print.sort()
                 for iter_item_sublayer in lst_tocs_sublayer_print:
-                    lst_print = self.dict_refs_categorized[-2][iter_item_sublayer].return_refs_printout()
+                    lst_print = self.dict_refs_categorized[-2][iter_item_sublayer].return_refs_printout(
+                    )
                     file_bib.write("\n")
                     for str_print in lst_print:
                         file_bib.write(str_print + "\n")
         else:
             print("Abort. The bib file is not updated.")
+
     def __read_tocs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
-            lst_file_inputs = [str_fileinput.strip() for str_fileinput in lst_file_inputs]
+            lst_file_inputs = [str_fileinput.strip()
+                               for str_fileinput in lst_file_inputs]
         flag_detect_tocs = False
         lst_text = []
         for iter_item in lst_file_inputs:
@@ -279,19 +304,24 @@ class BibManager:
             print("The following table of contents has been created.")
             self.display_tocs()
         else:
-            print("Table of contents is not detected from the bib file.", end = "")
+            print("Table of contents is not detected from the bib file.", end="")
             print("A default table of contents has been created.")
             self.obj_tocs = BibTableOfContents()
-            self.obj_tocs.create_tocs_from_multidimensional_list(['Default Section'])
+            self.obj_tocs.create_tocs_from_multidimensional_list(
+                ['Default Section'])
             self.display_tocs()
+
     def __add_refs_from_bib(self):
         with open(self.path_bib, 'r') as file_bib:
             lst_file_inputs = file_bib.readlines()
-            lst_file_inputs = [str_fileinput.strip() for str_fileinput in lst_file_inputs]
+            lst_file_inputs = [str_fileinput.strip()
+                               for str_fileinput in lst_file_inputs]
         self.__add_refs(lst_file_inputs)
+
     def __update_catid(self, str_id):
         if str_id in self.dict_refs:
-            str_catid = input("Please key in the catid for reference " + str_id + ": 0x")
+            str_catid = input(
+                "Please key in the catid for reference " + str_id + ": 0x")
             try:
                 self.dict_refs[str_id].hex_catid = int(str_catid, 16)
                 return True
@@ -299,9 +329,11 @@ class BibManager:
                 return False
         print("Reference " + str_id + " cannot be found.")
         return False
+
     def __update_tocs(self, lst_text):
         self.obj_tocs = BibTableOfContents()
         self.obj_tocs.create_tocs_from_space_list(lst_text)
+
     def __add_refs(self, lst_text):
         for iter_item in lst_text:
             if len(iter_item) > 0:
@@ -371,15 +403,18 @@ class BibManager:
                         lst_keyinfo = re.findall(r'0x\d{8}', lst_keyinfo[0])
                         obj_reference.hex_catid = int(lst_keyinfo[0], 0)
                     self.dict_refs[obj_reference.str_id] = obj_reference
+
     @staticmethod
     def __ask_yes_no(str_message):
-        str_input = input(str_message + " (YES/NO): ")
         while True:
+            str_input = input(str_message + " (YES/NO): ")
             if str_input.upper() == 'YES':
                 return True
-            if str_input.upper() == 'NO':
+            elif str_input.upper() == 'NO':
                 return False
-            str_input = input("Please reply with either YES or NO: ")
+            else:
+                print("Please reply with either YES or NO.")
+
     @staticmethod
     def __chop_list(lst_input):
         lst_output = []
